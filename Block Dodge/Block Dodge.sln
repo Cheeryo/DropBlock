@@ -1,12 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Block Dodge.Plugins", "Block Dodge.Plugins.csproj", "{999E7B84-2067-F4C9-F9C3-41589C3D3DB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Block Dodge.Editor.Plugins", "Block Dodge.Editor.Plugins.csproj", "{67472E45-43B8-DE0A-66A2-6AD0BB2359D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{999E7B84-2067-F4C9-F9C3-41589C3D3DB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{999E7B84-2067-F4C9-F9C3-41589C3D3DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{999E7B84-2067-F4C9-F9C3-41589C3D3DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{999E7B84-2067-F4C9-F9C3-41589C3D3DB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67472E45-43B8-DE0A-66A2-6AD0BB2359D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67472E45-43B8-DE0A-66A2-6AD0BB2359D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67472E45-43B8-DE0A-66A2-6AD0BB2359D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67472E45-43B8-DE0A-66A2-6AD0BB2359D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
