@@ -6,15 +6,17 @@ public class PlayerController2 : MonoBehaviour {
 
     public float inputDelay = 0.1f;
     public float forwardVel = 12;
-    public float rotateVel = 100;
+    public float jumpForce = 0;
 
-    Quaternion targetRotation;
-    Rigidbody rb;
-    float forwardInput, turnInput;
+    public bool isGrounded;
+    public bool isMidAir;
+    public bool isHanging;
+
+    public Rigidbody rb;
+    float forwardInput;
 
     void Start ()
     {
-        targetRotation = transform.rotation;
         if (GetComponent<Rigidbody>())
         {
             rb = GetComponent<Rigidbody>();
@@ -23,42 +25,71 @@ public class PlayerController2 : MonoBehaviour {
         {
             Debug.LogError("No Rigidbody");
         }
-        forwardInput = turnInput = 0;
+        forwardInput = 0;
     }
 
     void GetInput()
     {
         forwardInput = Input.GetAxis("Horizontal");
-        //turnInput = Input.GetAxis("Horizontal");
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (isGrounded)
+            {
+                isMidAir = true;
+                jumpForce = 3;
+            }
+        }
     }
 
     void Update()
     {
         GetInput();
-       // Turn();
+        Debug.Log(jumpForce);
     }
 	
     void FixedUpdate()
     {
-        Run();
+        Move();
+        Jump();
     }
 
-    void Run ()
+    void Move ()
     {
         if (Mathf.Abs(forwardInput) > inputDelay)
         {
             //move
-            rb.velocity = new Vector3(forwardInput * forwardVel,0,0);
+            rb.velocity = new Vector3(forwardInput * forwardVel,rb.velocity.y,0);
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            rb.velocity = new Vector3(0,rb.velocity.y,0);
         }
     }
 
-    void Turn ()
+    void Jump ()
     {
-     //   targetRotation = Quaternion.AngleAxis(rotateVel * turnInput * Time.deltaTime, Vector3.up);
-     //   transform.rotation = targetRotation;
+        if (isGrounded)
+        {
+            rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
+        }
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        Debug.Log("You hit it. " + other.collider.name);
+        if (other.collider.tag == "Floor")
+        {
+            isGrounded = true;
+            isMidAir = false;
+        }
+    }
+
+    void OnCollisionExit(Collision other)
+    {
+        if (other.collider.tag == "Floor")
+        {
+            isGrounded = false;
+            jumpForce = 0;
+        }
     }
 }
