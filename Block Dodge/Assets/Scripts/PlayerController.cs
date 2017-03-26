@@ -4,42 +4,75 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+    public float inputDelay = 0.1f;
+    public float forwardVel = 12;
+    public float jumpForce = 0;
+
     public bool isGrounded;
-    public bool isJumping;
+    public bool isMidAir;
+    public bool isHanging;
 
     public Rigidbody rb;
+    float forwardInput;
 
-    public float sideSpeed;
-    public float moveSpeed;
-    public float jumpForce;
-
-
-	// Use this for initialization
-	void Start ()
+    void Start ()
     {
-        rb = GetComponent<Rigidbody>();
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        sideSpeed = Input.GetAxis("Horizontal") * moveSpeed;
+        if (GetComponent<Rigidbody>())
+        {
+            rb = GetComponent<Rigidbody>();
+        }
+        else
+        {
+            Debug.LogError("No Rigidbody");
+        }
+        forwardInput = 0;
+    }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+    void GetInput()
+    {
+        forwardInput = Input.GetAxis("Horizontal");
+        if (Input.GetButtonDown("Jump"))
         {
             if (isGrounded)
             {
-                isJumping = true;
-                jumpForce = 200;
+                isMidAir = true;
+                jumpForce = 5;
             }
         }
-        Debug.Log(isGrounded);
-	}
+    }
 
+    void Update()
+    {
+        GetInput();
+        Debug.Log(jumpForce);
+    }
+	
     void FixedUpdate()
     {
-        rb.AddForce(new Vector3(sideSpeed,jumpForce,0));
-    } 
+        Move();
+        Jump();
+    }
+
+    void Move ()
+    {
+        if (Mathf.Abs(forwardInput) > inputDelay)
+        {
+            //move
+            rb.velocity = new Vector3(forwardInput * forwardVel,rb.velocity.y,0);
+        }
+        else
+        {
+            rb.velocity = new Vector3(0,rb.velocity.y,0);
+        }
+    }
+
+    void Jump ()
+    {
+        if (isGrounded)
+        {
+            rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
+        }
+    }
 
     void OnCollisionEnter(Collision other)
     {
@@ -47,7 +80,7 @@ public class PlayerController : MonoBehaviour {
         if (other.collider.tag == "Floor")
         {
             isGrounded = true;
-            isJumping = false;
+            isMidAir = false;
         }
     }
 
