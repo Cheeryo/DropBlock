@@ -4,92 +4,95 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    public float inputDelay = 0.1f;
-    public float forwardVel = 12;
-    public float jumpForce = 0;
+    [Header("Settings")]
+    [SerializeField] private float inputDelay = 0.1f;
+    [SerializeField] private float forwardVel = 12;
+    [SerializeField] private float jumpForce = 0;
 
-    public bool isGrounded;
-    public bool isMidAir;
-    public bool isHanging;
+    [Header("States")]
+    [SerializeField] private bool isGrounded;
+    [SerializeField] private bool isMidAir;
+    [SerializeField] private bool isHanging;
 
-    public Rigidbody rb;
-    float forwardInput;
+    private Rigidbody rb;
+    private float forwardInput;
+    private bool jump;
 
-    void Start ()
+    private void Start ()
     {
-        if (GetComponent<Rigidbody>())
-        {
-            rb = GetComponent<Rigidbody>();
-        }
-        else
-        {
-            Debug.LogError("No Rigidbody");
-        }
+        rb = GetComponent<Rigidbody>();
         forwardInput = 0;
     }
 
-    void GetInput()
+    private void GetInput()
     {
         forwardInput = Input.GetAxis("Horizontal");
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (isGrounded)
-            {
-                isMidAir = true;
-                jumpForce = 5;
-            }
-        }
+
+        if (isGrounded && Input.GetButtonDown("Jump"))
+            jump = true;
     }
 
-    void Update()
+    private void Update()
     {
         GetInput();
-        Debug.Log(jumpForce);
+        GroundCheck();
     }
 	
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         Move();
         Jump();
     }
 
-    void Move ()
+    private void Move ()
     {
-        if (Mathf.Abs(forwardInput) > inputDelay)
-        {
-            //move
+        if (Mathf.Abs(forwardInput) > inputDelay) //move
             rb.velocity = new Vector3(forwardInput * forwardVel,rb.velocity.y,0);
+        else
+            rb.velocity = new Vector3(0,rb.velocity.y,0);
+    }
+
+    private void Jump ()
+    {
+        if (jump)
+        {
+            rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
+            jump = false;
+        }
+    }
+    
+    private void GroundCheck()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, .6f))
+        {
+            if (hit.collider.CompareTag("Floor") || hit.collider.CompareTag("Cube"))
+            {
+                isGrounded = true;
+                isMidAir = false;
+            }
+            else
+            {
+                isGrounded = false;
+                isMidAir = true;
+            }
         }
         else
         {
-            rb.velocity = new Vector3(0,rb.velocity.y,0);
-        }
-    }
-
-    void Jump ()
-    {
-        if (isGrounded)
-        {
-            rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
-        }
-    }
-
-    void OnCollisionEnter(Collision other)
-    {
-        Debug.Log("You hit it. " + other.collider.name);
-        if (other.collider.tag == "Floor")
-        {
-            isGrounded = true;
-            isMidAir = false;
-        }
-    }
-
-    void OnCollisionExit(Collision other)
-    {
-        if (other.collider.tag == "Floor")
-        {
             isGrounded = false;
-            jumpForce = 0;
+            isMidAir = true;
         }
+    }
+
+    private void OnCollisionEnter(Collision col)
+    {
+        /*
+            # the player was hit by an GameObject with tag 'Cube'
+            # the collision point was within the upper half of the player -> cube above player
+            # the cube is currently falling
+        */
+        if (col.collider.CompareTag("Cube") && col.contacts[0].point.y > transform.position.y && (col.rigidbody.velocity.y > .5f || col.rigidbody.velocity.y < -.5f))
+            Debug.Log("You were squeezed by a cube!");
     }
 }
