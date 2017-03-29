@@ -39,7 +39,7 @@ public class BlockController : MonoBehaviour {
         if (other.CompareTag("Cube") || other.CompareTag("Floor"))
         {
             finalSpeed = Vector3.zero;
-            locked = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            locked = new Vector3(transform.position.x, Mathf.Round(transform.position.y), transform.position.z);
             negateMoving = true;
         }
         if (other.CompareTag("Player"))

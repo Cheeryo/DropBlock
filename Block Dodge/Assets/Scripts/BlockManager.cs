@@ -29,7 +29,7 @@ public class BlockManager : MonoBehaviour
         {
             blockSelector();
             currentInterval = 0;
-            GameObject.Instantiate(blockPrefab[blockNumber], new Vector3(Random.Range(-10, 10) + .5f, 27, 0), Quaternion.Euler(0,90,0), blockContainer);
+            GameObject.Instantiate(blockPrefab[0], new Vector3(Random.Range(-10, 10) + .5f, 27, 0), Quaternion.Euler(0,90,0), blockContainer);
         }
 	}
 }
