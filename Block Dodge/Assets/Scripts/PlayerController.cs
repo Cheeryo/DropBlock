@@ -11,12 +11,12 @@ public class PlayerController : MonoBehaviour {
 
     [Header("States")]
     [SerializeField] private bool isGrounded;
+    [SerializeField] private bool isJumping;
     [SerializeField] private bool isMidAir;
     [SerializeField] private bool isHanging;
 
     private Rigidbody rb;
     private float forwardInput;
-    private bool jump;
 
     private void Start ()
     {
@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour {
         forwardInput = Input.GetAxis("Horizontal");
 
         if (isGrounded && Input.GetButtonDown("Jump"))
-            jump = true;
+            isJumping = true;
     }
 
     private void Update()
@@ -54,10 +54,10 @@ public class PlayerController : MonoBehaviour {
 
     private void Jump ()
     {
-        if (jump)
+        if (isJumping)
         {
             rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
-            jump = false;
+            isJumping = false;
         }
     }
     
