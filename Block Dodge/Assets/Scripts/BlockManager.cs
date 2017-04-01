@@ -63,7 +63,7 @@ public class BlockManager : MonoBehaviour
             {
                 xPos = CalculatePosition(-9, 8, 3);
                 if (xPos == -20) return;
-                GameObject.Instantiate(blockPrefab[5], new Vector3(xPos + 0.5f, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                GameObject.Instantiate(blockPrefab[5], new Vector3(xPos + 1.5f, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
         }
 	}
