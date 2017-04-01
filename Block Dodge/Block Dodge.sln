@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Block Dodge.Plugins", "Block Dodge.Plugins.csproj", "{999E7B84-2067-F4C9-F9C3-41589C3D3DB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Block Dodge", "Block Dodge.csproj", "{E0947C5C-30CD-B5C3-FC27-74C99264936A}"

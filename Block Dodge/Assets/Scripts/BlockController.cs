@@ -2,34 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockController : MonoBehaviour {
+public class BlockController : MonoBehaviour
+{
+    private Vector3 fallSpeed;
+    private bool locked;
+    private Rigidbody rb;
 
-    private float blockFallSpeed;
-    Vector3 finalSpeed;
-    private bool negateMoving;
-    private Vector3 locked;
-
-	// Use this for initialization
-	void Start () {
-        negateMoving = false;
-        declareFallSpeed();
-        Debug.Log(blockFallSpeed);
-        finalSpeed = new Vector3(0, blockFallSpeed, 0);
-    }
-	
-	// Update is called once per frame
-	void Update ()
+    public bool Locked
     {
-        transform.Translate(finalSpeed * Time.deltaTime);
-        if (negateMoving)
+        get
         {
-            transform.position = locked;
+            return locked;
+        }
+
+        set
+        {
+            locked = value;
         }
     }
 
-    private float declareFallSpeed()
+    private void Start ()
     {
+        rb = GetComponent<Rigidbody>();
+        fallSpeed = new Vector3(0, DeclareFallSpeed(), 0);
+    }
+	
+	private void Update ()
+    {
+        if (!Locked)
+        {
+            transform.Translate(fallSpeed * Time.deltaTime);
+        }
+    }
+
+    private float DeclareFallSpeed()
+    {
+        float blockFallSpeed;
         int declareNumber = (int) Random.Range(1.0f, 26.0f);
+
         if (declareNumber <= 4)
         {
             blockFallSpeed = Random.Range(-15.0f, -1.0f);
@@ -50,7 +60,7 @@ public class BlockController : MonoBehaviour {
         {
             blockFallSpeed = -10.0f;
         }
-        else if (declareNumber == 24 || declareNumber == 25)
+        else
         {
             blockFallSpeed = -15.0f;
         }
@@ -69,13 +79,24 @@ public class BlockController : MonoBehaviour {
     {
         if (other.CompareTag("Cube") || other.CompareTag("Floor"))
         {
-            finalSpeed = Vector3.zero;
-            locked = new Vector3(transform.position.x, Mathf.Round(transform.position.y), transform.position.z);
-            negateMoving = true;
+            LockBlock();
         }
         if (other.CompareTag("Player"))
         {
             //Destroy(gameObject,1);
         }
+    }
+
+    public void LockBlock()
+    {
+        Locked = true;
+        transform.position = new Vector3(transform.position.x, Mathf.Round(transform.position.y), transform.position.z);
+        rb.isKinematic = true;
+    }
+
+    public void UnlockBlock()
+    {
+        Locked = false;
+        rb.isKinematic = false;
     }
 }

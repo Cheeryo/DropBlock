@@ -93,6 +93,10 @@ public class PlayerController : MonoBehaviour {
             # the cube is currently falling
         */
         if (col.collider.CompareTag("Cube") && col.contacts[0].point.y > transform.position.y && (col.rigidbody.velocity.y > .5f || col.rigidbody.velocity.y < -.5f))
+        {
             Debug.Log("You were squeezed by a cube!");
+            //Locks (freezes) the cube to prevent bugs in the editor -> will not be needed later due to players death on this event
+            col.gameObject.GetComponent<BlockController>().LockBlock();
+        }
     }
 }
