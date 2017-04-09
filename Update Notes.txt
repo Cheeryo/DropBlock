@@ -1,0 +1,97 @@
+0.20.1
+
+-changed from Unity 5.5.2 to Unity 5.6.0
+-further improvements and bugfixing
+-BlockController
+	-fixed behavior of blocks when they landed
+	-added function lockBlock to lock blocks in place
+	-small changes to code for better formatting
+-BlockManager
+	-improved function blockSelector 
+	-improved spawning of new blocks
+	-added function CalculatePosition, if there are already blocks falling that are below 
+-PlayerController
+	-small improvement to blocks that hit the player	
+
+0.13.1
+
+-further improvements to BlockController
+	-blocks have randomized fall speed
+		-random Speed between 1 - 14 = 16%
+		-01 = 8%
+		-03 = 20%
+		-05 = 28%
+		-10 = 20%
+		-15 = 8%
+	-deleted old variables
+-further improvements to BlockManager
+	-changed old variable to select random block
+	-randomized block selection from 6 different prefabs
+		-Block 1x1 = 30%
+		-Block 1x2 = 20%
+		-Block 2x1 = 20%
+		-Block 1x3 = 5%
+		-Block 3x1 = 5%
+		-Block 2x2 = 10%
+
+0.11.2
+
+-Added Rigidbody to all block prefabs
+-Small improvement to BlockController and BlockManager
+
+0.11.1
+
+-further improvements on BlockController
+	-blocks dont fall with physics anymore
+	-blocks are being moved with translate
+
+0.10.1
+
+-Added Script BlockManager to spawn blocks at different positions
+-Added Script CameraManager for simple Camera Control
+-Added Script BlockController to control behavior of the falling blocks
+	-Falling
+	-Stopping
+	-Collision detection
+-Improvements on Player Controller
+	-Formatting
+	-GroundCheck with Raycast added
+	-Improved collision interaction
+
+0.09.5
+
+-Further improvements on Player Controller
+-added GameObjects and Colliders to Unity prototype scene
+
+0.09.2
+
+-Added Jump to Player Controller
+
+0.09.1
+
+-Improved Script PlayerController
+
+0.09
+
+-Added Script PlayerController for Movement
+
+0.08
+
+-Added first model prototypes
+-Added Prototype scene
+
+0.07
+
+-Added Subfolders for folder structure
+
+0.06
+
+-Added .gitignore
+
+0.05
+
+-Created Unity Project BlockDodge
+
+0.01
+
+-Added README.md

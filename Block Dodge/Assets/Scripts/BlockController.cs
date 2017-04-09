@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class BlockController : MonoBehaviour
 {
+
+    public Material corrupted;
+
     private Vector3 fallSpeed;
     private bool locked;
+
     private Rigidbody rb;
+    private Renderer blockRend;
 
     public bool Locked
     {
@@ -24,6 +29,8 @@ public class BlockController : MonoBehaviour
     private void Start ()
     {
         rb = GetComponent<Rigidbody>();
+        blockRend = GetComponent<Renderer>();
+        blockRend.enabled = true;
         fallSpeed = new Vector3(0, DeclareFallSpeed(), 0);
     }
 	
@@ -98,5 +105,13 @@ public class BlockController : MonoBehaviour
     {
         Locked = false;
         rb.isKinematic = false;
+    }
+
+    public void DespawnBlock ()
+    {
+        blockRend.sharedMaterial = corrupted;
+        (gameObject.GetComponent(typeof(Collider)) as Collider).enabled = false;
+        LockBlock();
+        Destroy(gameObject, 2.0f);
     }
 }
