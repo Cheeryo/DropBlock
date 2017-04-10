@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private bool jumpUsed;
     [SerializeField] private bool isMidAir;
     [SerializeField] private bool isHanging;
+    [SerializeField] private bool isRespawning;
 
     [Header("Spawner")]
     [SerializeField] private GameObject spawnController;
@@ -22,16 +23,23 @@ public class PlayerController : MonoBehaviour {
     private float spawnControllerPosition;
     private Transform spawnContainer;
     private bool pressedLR;
-    private bool releasedLR;
     private bool pressedRR;
-    private bool releasedRR;
 
     [Header("Misc")]
     [SerializeField] private Material[] materials;
 
+    public float score;
     private Rigidbody rb;
     private Renderer playerRend;
     private float forwardInput;
+
+    [Header("Controls")]
+    public string moveButton = "Horizontal_P1";
+    public string jumpButton = "Jump_P1";
+    public string respawnButton = "Respawn_P1";
+    public string itemButton = "UseItem_P1";
+    public string spawnerRightButton = "SpawnerRight_P1";
+    public string spawnerLeftButton = "SpawnerLeft_P1";
 
     private void Start ()
     {
@@ -40,39 +48,34 @@ public class PlayerController : MonoBehaviour {
         playerRend.enabled = true;
         forwardInput = 0;
         pressedLR = pressedRR = false;
-        releasedLR = releasedRR = true;
     }
 
     private void GetInput()
     {
-        forwardInput = Input.GetAxis("Horizontal");
+        if (!isRespawning)
+        {
+            forwardInput = Input.GetAxis(moveButton);
 
-        if (isGrounded && Input.GetButtonDown("Jump"))
-        {
-            isJumping = true;
-        }
-        if (Input.GetButtonDown("ForceRespawn"))
-        {
-            Die();
-        }
+            if (isGrounded && Input.GetButtonDown(jumpButton))
+            {
+                isJumping = true;
+            }
+            if (Input.GetButtonDown(respawnButton))
+            {
+                Die();
+            }
+            if (Input.GetButtonDown(itemButton))
+            {
 
-        if (releasedRR && Input.GetButtonDown("SpawnerRight"))
-        {
-            releasedRR = false;
-            pressedRR = true;
-        }
-        if (Input.GetButtonUp("SpawnerRight"))
-        {
-            releasedRR = true;
-        }
-        if (releasedLR && Input.GetButtonDown("SpawnerLeft"))
-        {
-            releasedLR = false;
-            pressedLR = true;
-        }
-        if (Input.GetButtonUp("SpawnerLeft"))
-        {
-            releasedLR = true;
+            }
+            if (!pressedRR && Input.GetButtonDown(spawnerRightButton))
+            {
+                pressedRR = true;
+            }
+            if (!pressedLR && Input.GetButtonDown(spawnerLeftButton))
+            {
+                pressedLR = true;
+            }
         }
     }
 
@@ -148,6 +151,7 @@ public class PlayerController : MonoBehaviour {
         {
             if (hit.collider.CompareTag("Floor") || hit.collider.CompareTag("Cube"))
             {
+                isRespawning = false;
                 isGrounded = true;
                 isMidAir = false;
                 jumpUsed = false;
@@ -167,6 +171,9 @@ public class PlayerController : MonoBehaviour {
 
     private void Die()
     {
+        isRespawning = true;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
         playerRend.sharedMaterial = materials[1];
         Respawn();
     }

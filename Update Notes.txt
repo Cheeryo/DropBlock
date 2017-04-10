@@ -1,3 +1,35 @@
+0.28.1
+
+-added local multiplayer components
+	-up to 4 players are able to play via controller
+	-not yet completely integrated
+-finalized InputManager Game controls
+-added StartMenu screen
+	-placeholder for different menues
+		-start menu
+		-main menu
+		-start game
+		-options
+		-graphics
+		-audio
+		-controls
+		-help
+		-quit game
+	-added controls for controller
+
+0.25.1
+
+-further improvements to BlockController
+	-blocks change color and despawn when they collide with player
+-further improvements to PlayerController
+	-can die and respawn
+	-additional controls
+	-added placeholder asset to set position to spawn items and to respawn
+-improvements to InputManager to fit Game controls
+	-renamed, deleted and added Input Options
+	-Controller is now fully supported
+-unneeded data and folders deleted
+
 0.20.1
 
 -changed from Unity 5.5.2 to Unity 5.6.0
