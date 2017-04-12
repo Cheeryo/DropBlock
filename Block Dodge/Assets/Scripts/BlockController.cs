@@ -76,7 +76,7 @@ public class BlockController : MonoBehaviour
 
     private void OnCollisionEnter(Collision col)
     {
-        if (col.collider.CompareTag("Cube") || col.collider.CompareTag("Floor"))
+        if (col.collider.CompareTag("Block") || col.collider.CompareTag("Level"))
         {
 
         }
@@ -84,7 +84,7 @@ public class BlockController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Cube") || other.CompareTag("Floor"))
+        if (other.CompareTag("Block") || other.CompareTag("Level"))
         {
             LockBlock();
         }

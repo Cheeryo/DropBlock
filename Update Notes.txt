@@ -1,3 +1,10 @@
+0.28.4
+
+-added Player 3 and Player 4
+-changes to StartScreen
+-added Layout for Ingame UI
+-added Item
+
 0.28.1
 
 -added local multiplayer components

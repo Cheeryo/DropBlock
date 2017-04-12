@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
 
@@ -32,6 +33,9 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody rb;
     private Renderer playerRend;
     private float forwardInput;
+
+    [Header("Interface")]
+    public Text scoreText;
 
     [Header("Controls")]
     public string moveButton = "Horizontal_P1";
@@ -149,7 +153,7 @@ public class PlayerController : MonoBehaviour {
 
         if (Physics.Raycast(transform.position, Vector3.down, out hit, .9f))
         {
-            if (hit.collider.CompareTag("Floor") || hit.collider.CompareTag("Cube"))
+            if (hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block"))
             {
                 isRespawning = false;
                 isGrounded = true;
@@ -191,7 +195,7 @@ public class PlayerController : MonoBehaviour {
             # the collision point was within the upper half of the player -> cube above player
             # the cube is currently falling
         */
-        if (col.collider.CompareTag("Cube") && col.contacts[0].point.y > transform.position.y && (col.rigidbody.velocity.y > .1f || col.rigidbody.velocity.y < -.1f))
+        if (col.collider.CompareTag("Block") && col.contacts[0].point.y > transform.position.y && (col.rigidbody.velocity.y > .1f || col.rigidbody.velocity.y < -.1f))
         {
             Debug.Log("You were squeezed by a cube!");
             //Locks (freezes) the cube to prevent bugs in the editor -> will not be needed later due to players death on this event

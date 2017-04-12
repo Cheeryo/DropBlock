@@ -92,7 +92,7 @@ public class BlockManager : MonoBehaviour
             if (Physics.Raycast(pos, Vector3.down, out hit, 29))
             {
                 //does Raycast hit an Cube that is currently falling?
-                if (hit.collider.CompareTag("Cube") && !hit.collider.GetComponent<BlockController>().Locked || hit.point.y > 26)
+                if (hit.collider.CompareTag("Block") && !hit.collider.GetComponent<BlockController>().Locked || hit.point.y > 26)
                 {
                     columns[i] = false;
                 }
