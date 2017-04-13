@@ -7,14 +7,10 @@ using UnityEngine.UI;
 public class InitGame : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Canvas startCanvas;
-    [SerializeField] private Canvas menuCanvas;
     [SerializeField] private GameObject startButton;
 
 	private void Awake()
     {
-        startCanvas.enabled = true;
-        menuCanvas.enabled = false;
     }
 
     private void Start()
@@ -26,10 +22,6 @@ public class InitGame : MonoBehaviour
 
     private void Update ()
     {
-		if (Input.GetButtonDown("Menu") && startCanvas.enabled == true)
-        {
-            startCanvas.enabled = false;
-            menuCanvas.enabled = true;
-        } 
+
 	}
 }
