@@ -186,6 +186,7 @@ public class PlayerController : MonoBehaviour {
     {
         SpawnUseControl(gameObject);
         playerRend.sharedMaterial = materials[0];
+        forwardInput = 0;
     }
 
     private void OnCollisionEnter(Collision col)

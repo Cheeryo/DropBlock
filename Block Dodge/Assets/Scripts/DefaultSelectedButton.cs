@@ -4,15 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DefaultSelectedButton : MonoBehaviour {
-
-    public EventSystem eventSystem;
+    
     public GameObject defaultButton;
 
-    public void OnOpen()
+    public void Start()
     {
         if (defaultButton != null)
         {
-            eventSystem.SetSelectedGameObject(defaultButton);
+            EventSystem.current.SetSelectedGameObject(defaultButton);
         }
     }
 
