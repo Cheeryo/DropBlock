@@ -233,7 +233,7 @@ public class PlayerController : MonoBehaviour {
             # the collision point was within the upper half of the player -> cube above player
             # the cube is currently falling
         */
-        if (col.collider.CompareTag("Block") && col.contacts[0].point.y > transform.position.y && (col.rigidbody.velocity.y > .1f || col.rigidbody.velocity.y < -.1f))
+        if (col.collider.CompareTag("Block") && col.contacts[0].point.y > transform.position.y && !col.collider.GetComponent<BlockController>().Locked)
         {
             Debug.Log("You were squeezed by a cube!");
             currentEnergy -= 10;
