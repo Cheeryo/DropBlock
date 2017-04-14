@@ -1,3 +1,12 @@
+0.30.1
+
+-implementation of all remaining start menu tabs
+-changes to PlayerController
+	-Character has now energy
+	-script now connected to Interface (Score + Energy is updating)
+	-small improvements
+-first Interface Layout for ingame (Prototype)
+
 0.28.4
 
 -added Player 3 and Player 4

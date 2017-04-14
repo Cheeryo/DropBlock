@@ -44,32 +44,43 @@ public class BlockController : MonoBehaviour
 
     private float DeclareFallSpeed()
     {
-        float blockFallSpeed;
-        int declareNumber = (int) Random.Range(1.0f, 26.0f);
-
-        if (declareNumber <= 4)
-        {
-            blockFallSpeed = Random.Range(-15.0f, -1.0f);
-        }
-        else if (declareNumber == 5 || declareNumber == 6)
+        float blockFallSpeed = 0;
+        int declareNumber = (int) Random.Range(0.0f, 100.0f);
+        if (declareNumber == 1 || declareNumber == 2)
         {
             blockFallSpeed = -1.0f;
         }
-        else if (declareNumber > 6 && declareNumber < 12)
+        else if (declareNumber >= 3 && declareNumber <= 6)
+        {
+            blockFallSpeed = -2.0f;
+        }
+        else if (declareNumber >= 7 && declareNumber <= 16)
         {
             blockFallSpeed = -3.0f;
         }
-        else if (declareNumber > 11 && declareNumber < 19)
+        else if (declareNumber >= 17 && declareNumber <= 32)
+        {
+            blockFallSpeed = -4.0f;
+        }
+        else if (declareNumber >= 33 && declareNumber <= 68)
         {
             blockFallSpeed = -5.0f;
         }
-        else if (declareNumber > 18 && declareNumber < 24)
+        else if (declareNumber >= 69 && declareNumber <= 84)
+        {
+            blockFallSpeed = -6.0f;
+        }
+        else if (declareNumber >= 85 && declareNumber <= 94)
+        {
+            blockFallSpeed = -7.0f;
+        }
+        else if (declareNumber >= 95 && declareNumber <= 98)
+        {
+            blockFallSpeed = -8.0f;
+        }
+        else if (declareNumber == 99 || declareNumber == 100)
         {
             blockFallSpeed = -10.0f;
-        }
-        else
-        {
-            blockFallSpeed = -15.0f;
         }
         return blockFallSpeed;
     }

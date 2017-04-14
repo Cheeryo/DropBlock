@@ -14,11 +14,6 @@ public class BlockManager : MonoBehaviour
     {
 
 	}
-
-    private int BlockSelector()
-    {
-        return (int)Random.Range(1.0f, 21.0f);
-    }
 	
 	private void Update ()
     {
@@ -27,43 +22,44 @@ public class BlockManager : MonoBehaviour
         {
             currentInterval = 0;
 
-            int blockNumber = BlockSelector();
+            int blockNumber = (int)Random.Range(0.0f, 100.0f);
             float xPos;
-            if (blockNumber <= 8)
+
+            if (blockNumber >= 1 && blockNumber <= 5) // spawn 3x1 Block
             {
-                xPos = CalculatePosition(-10, 10);
+                xPos = CalculatePosition(-9, 8, 3); 
                 if (xPos == -20) return; //if there's no free position to spawn, no block will be spawned
-                GameObject.Instantiate(blockPrefab[0], new Vector3(xPos + 0.5f, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                GameObject.Instantiate(blockPrefab[0], new Vector3(xPos + 1.5f, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber == 9 || blockNumber == 10)
+            else if (blockNumber >= 6 && blockNumber <= 27) // spawn 2x1 Block
             {
                 xPos = CalculatePosition(-10, 9, 2);
                 if (xPos == -20) return;
-                GameObject.Instantiate(blockPrefab[1], new Vector3(xPos + 1, 26, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                GameObject.Instantiate(blockPrefab[1], new Vector3(xPos + 1, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber > 10 && blockNumber < 15)
-            {
-                xPos = CalculatePosition(-10, 10);
-                if (xPos == -20) return;
-                GameObject.Instantiate(blockPrefab[2], new Vector3(xPos + 0.5f, 26, 0), Quaternion.Euler(0, 90, 0), blockContainer);
-            }
-            else if (blockNumber == 15)
-            {
-                xPos = CalculatePosition(-10, 10);
-                if (xPos == -20) return;
-                GameObject.Instantiate(blockPrefab[3], new Vector3(xPos + 0.5f, 25, 0), Quaternion.Euler(0, 90, 0), blockContainer);
-            }
-            else if (blockNumber == 16 || blockNumber == 17)
+            else if (blockNumber >= 28 && blockNumber <= 45) // spawn 2x2 Block
             {
                 xPos = CalculatePosition(-10, 9, 2);
                 if (xPos == -20) return;
-                GameObject.Instantiate(blockPrefab[4], new Vector3(xPos + 1, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                GameObject.Instantiate(blockPrefab[2], new Vector3(xPos + 1, 26, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else
+            else if (blockNumber >= 46 && blockNumber <= 73) // spawn 1x1 Block
             {
-                xPos = CalculatePosition(-9, 8, 3);
+                xPos = CalculatePosition(-10, 10);
+                if (xPos == -20) return; 
+                GameObject.Instantiate(blockPrefab[3], new Vector3(xPos + 0.5f, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+            }
+            else if (blockNumber >= 74 && blockNumber <= 95) // spawn 1x2 Block
+            {
+                xPos = CalculatePosition(-10, 10);
                 if (xPos == -20) return;
-                GameObject.Instantiate(blockPrefab[5], new Vector3(xPos + 1.5f, 27, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                GameObject.Instantiate(blockPrefab[4], new Vector3(xPos + 0.5f, 26, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+            }
+            else if (blockNumber >= 96 && blockNumber <= 100) // spawn 1x3 Block
+            {
+                xPos = CalculatePosition(-10, 10);
+                if (xPos == -20) return;
+                GameObject.Instantiate(blockPrefab[5], new Vector3(xPos + 0.5f, 25, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
         }
 	}

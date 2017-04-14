@@ -7,8 +7,13 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Settings")]
     [SerializeField] private float inputDelay = 0.1f;
+
+    [Header("Stats")]
+    [SerializeField] private float maxEnergy = 100f;
     [SerializeField] private float forwardVel = 12;
     [SerializeField] private float jumpForce = 0;
+
+    private float currentEnergy;
 
     [Header("States")]
     [SerializeField] private bool isGrounded;
@@ -29,13 +34,19 @@ public class PlayerController : MonoBehaviour {
     [Header("Misc")]
     [SerializeField] private Material[] materials;
 
-    public float score;
+    private float score;
     private Rigidbody rb;
     private Renderer playerRend;
     private float forwardInput;
 
     [Header("Interface")]
     public Text scoreText;
+    public Slider energySlider;
+    public Image energyBar;
+    public Color energyAbove75 = Color.green;
+    public Color energyAbove50 = Color.yellow;
+    public Color energyAbove25;
+    public Color energyAbove0 = Color.red;
 
     [Header("Controls")]
     public string moveButton = "Horizontal_P1";
@@ -52,6 +63,7 @@ public class PlayerController : MonoBehaviour {
         playerRend.enabled = true;
         forwardInput = 0;
         pressedLR = pressedRR = false;
+        currentEnergy = maxEnergy;   
     }
 
     private void GetInput()
@@ -88,6 +100,7 @@ public class PlayerController : MonoBehaviour {
         GetInput();
         GroundCheck();
         spawnMovementControl();
+        SetUI();
     }
 	
     private void FixedUpdate()
@@ -112,6 +125,30 @@ public class PlayerController : MonoBehaviour {
             rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
             isJumping = false;
         }
+    }
+
+    private void SetUI()
+    {
+        energySlider.value = currentEnergy;
+
+        if (currentEnergy > 75)
+        {
+            energyBar.color = energyAbove75;
+        }
+        else if (currentEnergy < 76 && currentEnergy > 50)
+        {
+            energyBar.color = energyAbove50;
+        }
+        else if (currentEnergy < 51 && currentEnergy > 25)
+        {
+            energyBar.color = energyAbove25;
+        }
+        else
+        {
+            energyBar.color = energyAbove0;
+        }
+
+        scoreText.text = "Score: " + score.ToString();
     }
 
     private void spawnMovementControl ()
@@ -199,6 +236,7 @@ public class PlayerController : MonoBehaviour {
         if (col.collider.CompareTag("Block") && col.contacts[0].point.y > transform.position.y && (col.rigidbody.velocity.y > .1f || col.rigidbody.velocity.y < -.1f))
         {
             Debug.Log("You were squeezed by a cube!");
+            currentEnergy -= 10;
             //Locks (freezes) the cube to prevent bugs in the editor -> will not be needed later due to players death on this event
             col.gameObject.GetComponent<BlockController>().DespawnBlock();
         }
