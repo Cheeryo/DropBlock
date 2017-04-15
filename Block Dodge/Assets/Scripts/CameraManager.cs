@@ -10,16 +10,17 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private float zoomMultiplier;
 
     private Vector3 startPosition;
-    private PlayerController[] players;
+    [HideInInspector] public List<PlayerController> players = new List<PlayerController>();
 
 	private void Start ()
     {
         startPosition = Camera.main.transform.position;
-        players = GameObject.FindObjectsOfType<PlayerController>();
 	}
 	
 	private void LateUpdate ()
     {
+        if (players.Count == 0) return;
+
         Bounds b = CalculateBounds();
         Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, new Vector3(b.center.x, Mathf.Clamp(3.5f-b.size.y,0,3.5f) + b.center.y, startPosition.z - Mathf.Abs(b.size.y) * zoomMultiplier), Time.deltaTime * lerpSpeed);
     }
