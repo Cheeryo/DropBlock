@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] private Transform player;
+    [HideInInspector] public List<PlayerController> players = new List<PlayerController>();
+
     [SerializeField] private float lerpSpeed;
     [SerializeField] private float zoomMultiplier;
-
     private Vector3 startPosition;
-    [HideInInspector] public List<PlayerController> players = new List<PlayerController>();
 
 	private void Start ()
     {
@@ -22,7 +21,7 @@ public class CameraManager : MonoBehaviour
         if (players.Count == 0) return;
 
         Bounds b = CalculateBounds();
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, new Vector3(b.center.x, Mathf.Clamp(3.5f-b.size.y,0,3.5f) + b.center.y, startPosition.z - Mathf.Abs(b.size.y) * zoomMultiplier), Time.deltaTime * lerpSpeed);
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, new Vector3(b.center.x, b.center.y, startPosition.z - Mathf.Max(Mathf.Abs(b.size.y), Mathf.Abs(b.size.x) * .5f) * zoomMultiplier), Time.deltaTime * lerpSpeed);
     }
 
     private Bounds CalculateBounds()
