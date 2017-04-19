@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Spawner")]
     [SerializeField] private GameObject spawnController;
-
+    [SerializeField] private GameManager manager;
     private float spawnControllerPosition;
     private Transform spawnContainer;
     private bool pressedLR;
@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour {
         playerRend.enabled = true;
         forwardInput = 0;
         pressedLR = pressedRR = false;
-        currentEnergy = maxEnergy;   
+        currentEnergy = maxEnergy;
     }
 
     private void GetInput()
@@ -156,7 +156,7 @@ public class PlayerController : MonoBehaviour {
         spawnControllerPosition = spawnController.transform.position.x;
         if (pressedRR)
         {
-            if (spawnControllerPosition < 9)
+            if (spawnControllerPosition < (manager.levelWidth -1))
             {
                 spawnController.transform.position = new Vector3(spawnControllerPosition + 1, spawnController.transform.position.y, spawnController.transform.position.z);
             }
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour {
         }
         if (pressedLR)
         {
-            if (spawnControllerPosition > -9)
+            if (spawnControllerPosition > (-manager.levelWidth +1))
             {
                 spawnController.transform.position = new Vector3(spawnControllerPosition - 1, spawnController.transform.position.y, spawnController.transform.position.z);
             }
