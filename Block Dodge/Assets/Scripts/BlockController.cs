@@ -9,6 +9,7 @@ public class BlockController : MonoBehaviour
 
     private Vector3 fallSpeed;
     private bool locked;
+    private bool isCorrupted;
 
     private Rigidbody rb;
     private Renderer blockRend;
@@ -26,12 +27,25 @@ public class BlockController : MonoBehaviour
         }
     }
 
+    public bool IsCorrupted
+    {
+        get
+        {
+            return isCorrupted;
+        }
+        set
+        {
+            isCorrupted = value;
+        }
+    }
+
     private void Start ()
     {
         rb = GetComponent<Rigidbody>();
         blockRend = GetComponent<Renderer>();
         blockRend.enabled = true;
         fallSpeed = new Vector3(0, DeclareFallSpeed(), 0);
+        isCorrupted = false;
     }
 	
 	private void Update ()
@@ -46,39 +60,39 @@ public class BlockController : MonoBehaviour
     {
         float blockFallSpeed = 0;
         int declareNumber = (int) Random.Range(0.0f, 100.0f);
-        if (declareNumber == 1 || declareNumber == 2)
+        if (declareNumber == 1 || declareNumber == 2) // 2%
         {
             blockFallSpeed = -1.0f;
         }
-        else if (declareNumber >= 3 && declareNumber <= 6)
+        else if (declareNumber >= 3 && declareNumber <= 6) // 4%
         {
             blockFallSpeed = -2.0f;
         }
-        else if (declareNumber >= 7 && declareNumber <= 16)
+        else if (declareNumber >= 7 && declareNumber <= 16) // 10%
         {
             blockFallSpeed = -3.0f;
         }
-        else if (declareNumber >= 17 && declareNumber <= 32)
+        else if (declareNumber >= 17 && declareNumber <= 32) // 16%
         {
             blockFallSpeed = -4.0f;
         }
-        else if (declareNumber >= 33 && declareNumber <= 68)
+        else if (declareNumber >= 33 && declareNumber <= 68) // 36%
         {
             blockFallSpeed = -5.0f;
         }
-        else if (declareNumber >= 69 && declareNumber <= 84)
+        else if (declareNumber >= 69 && declareNumber <= 84) // 16%
         {
             blockFallSpeed = -6.0f;
         }
-        else if (declareNumber >= 85 && declareNumber <= 94)
+        else if (declareNumber >= 85 && declareNumber <= 94) // 10%
         {
             blockFallSpeed = -7.0f;
         }
-        else if (declareNumber >= 95 && declareNumber <= 98)
+        else if (declareNumber >= 95 && declareNumber <= 98) // 4%
         {
             blockFallSpeed = -8.0f;
         }
-        else if (declareNumber == 99 || declareNumber == 100)
+        else if (declareNumber == 99 || declareNumber == 100) // 2%
         {
             blockFallSpeed = -10.0f;
         }
@@ -120,8 +134,9 @@ public class BlockController : MonoBehaviour
 
     public void DespawnBlock ()
     {
+        isCorrupted = true;
         blockRend.sharedMaterial = corrupted;
-        (gameObject.GetComponent(typeof(Collider)) as Collider).enabled = false;
+        gameObject.layer = 9;
         LockBlock();
         Destroy(gameObject, 2.0f);
     }

@@ -1,3 +1,16 @@
+0.35.1
+
+-improvements to camera (up to 4 players included)
+-improvements to start screen
+	-select up to 4 players
+	-select level
+-renamed scenes
+-improvements to GameManager that other scripts react accordingly to selected level
+-added Exchange Manager to manage scene switch
+-added Layers to manage Collision between Game Objects
+-improvements to PlayerController and SpawnController
+	-spawn position is being declared by Raycast
+
 0.30.1
 
 -implementation of all remaining start menu tabs

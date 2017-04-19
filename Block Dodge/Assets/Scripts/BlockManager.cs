@@ -26,37 +26,37 @@ public class BlockManager : MonoBehaviour
             int blockNumber = (int)Random.Range(0.0f, 100.0f);
             float xPos;
 
-            if (blockNumber >= 1 && blockNumber <= 5) // spawn 3x1 Block
+            if (blockNumber >= 1 && blockNumber <= 5) // spawn 3x1 Block - 5%
             {
                 xPos = CalculatePosition((int)-manager.levelWidth+1, (int)manager.levelWidth-2, 3); 
                 if (xPos == (manager.levelWidth *-2)) return; //if there's no free position to spawn, no block will be spawned
                 GameObject.Instantiate(blockPrefab[0], new Vector3(xPos + 1.5f, manager.levelHeight, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber >= 6 && blockNumber <= 27) // spawn 2x1 Block
+            else if (blockNumber >= 6 && blockNumber <= 27) // spawn 2x1 Block - 22%
             {
                 xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth -1, 2);
                 if (xPos == (manager.levelWidth * -2)) return;
                 GameObject.Instantiate(blockPrefab[1], new Vector3(xPos + 1, manager.levelHeight, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber >= 28 && blockNumber <= 45) // spawn 2x2 Block
+            else if (blockNumber >= 28 && blockNumber <= 45) // spawn 2x2 Block - 18%
             {
                 xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth -1, 2);
                 if (xPos == (manager.levelWidth * -2)) return;
                 GameObject.Instantiate(blockPrefab[2], new Vector3(xPos + 1, manager.levelHeight -1, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber >= 46 && blockNumber <= 73) // spawn 1x1 Block
+            else if (blockNumber >= 46 && blockNumber <= 73) // spawn 1x1 Block - 28%
             {
                 xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth);
                 if (xPos == (manager.levelWidth * -2)) return; 
                 GameObject.Instantiate(blockPrefab[3], new Vector3(xPos + 0.5f, manager.levelHeight, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber >= 74 && blockNumber <= 95) // spawn 1x2 Block
+            else if (blockNumber >= 74 && blockNumber <= 95) // spawn 1x2 Block - 22%
             {
                 xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth);
                 if (xPos == (manager.levelWidth * -2)) return;
                 GameObject.Instantiate(blockPrefab[4], new Vector3(xPos + 0.5f, manager.levelHeight -1, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber >= 96 && blockNumber <= 100) // spawn 1x3 Block
+            else if (blockNumber >= 96 && blockNumber <= 100) // spawn 1x3 Block - 5%
             {
                 xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth);
                 if (xPos == (manager.levelWidth * -2)) return;

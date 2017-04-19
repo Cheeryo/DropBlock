@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     {
         SetPlayers();
         SetLevel();
-	}
+        
+    }
 
     private void SetPlayers()
     {

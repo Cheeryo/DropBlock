@@ -26,8 +26,8 @@ public class PlayerController : MonoBehaviour {
     [Header("Spawner")]
     [SerializeField] private GameObject spawnController;
     [SerializeField] private GameManager manager;
+    [SerializeField] private Transform spawnContainer;
     private float spawnControllerPosition;
-    private Transform spawnContainer;
     private bool pressedLR;
     private bool pressedRR;
 
@@ -174,13 +174,26 @@ public class PlayerController : MonoBehaviour {
 
     private void SpawnUseControl(GameObject spawnObject)
     {
+        RaycastHit hit;
+        Vector3 raycastPosition = new Vector3(spawnControllerPosition, manager.levelHeight, 0);
+        Vector3 spawnPosition = new Vector3(spawnControllerPosition,6,0);
+
+        if (Physics.Raycast(raycastPosition, Vector3.down, out hit, manager.levelHeight))
+        {
+            if (hit.collider.CompareTag("Block") && hit.collider.GetComponent<BlockController>().Locked && !hit.collider.GetComponent<BlockController>().IsCorrupted || hit.collider.CompareTag("Level"))
+            {
+                spawnPosition = hit.point;
+                
+            }      
+        }
         if (spawnObject.CompareTag("Player"))
         {
-            spawnObject.transform.position = new Vector3(spawnControllerPosition, 20, 0);
+            spawnPosition.y += 2;
+            spawnObject.transform.position = spawnPosition;
         }
         else if (spawnObject.CompareTag("Item"))
         {
-            GameObject.Instantiate(spawnObject, new Vector3(spawnControllerPosition, 20, 0), Quaternion.Euler(0, 0, 0), spawnContainer);
+            GameObject.Instantiate(spawnObject, spawnPosition, Quaternion.Euler(0, 0, 0), spawnContainer);
         }
     }
     
