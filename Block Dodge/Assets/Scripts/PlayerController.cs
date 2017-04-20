@@ -11,7 +11,9 @@ public class PlayerController : MonoBehaviour {
     [Header("Stats")]
     [SerializeField] private float maxEnergy = 100f;
     [SerializeField] private float forwardVel = 12;
-    [SerializeField] private float jumpForce = 0;
+    [SerializeField] private float tapJumpForce = 3;
+    [SerializeField] private float holdJumpForce = 7;
+    private float timer;
 
     private float currentEnergy;
 
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private GameObject spawnController;
     [SerializeField] private GameManager manager;
     [SerializeField] private Transform spawnContainer;
+    private Vector3 spawnPosition;
     private float spawnControllerPosition;
     private bool pressedLR;
     private bool pressedRR;
@@ -76,6 +79,9 @@ public class PlayerController : MonoBehaviour {
             {
                 isJumping = true;
             }
+            if (Input.GetButtonUp(jumpButton))
+            {
+            }
             if (Input.GetButtonDown(respawnButton))
             {
                 Die();
@@ -121,8 +127,8 @@ public class PlayerController : MonoBehaviour {
     {
         if (isJumping)
         {
-            jumpUsed = true;
-            rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
+            //if (timer > 0)
+            rb.AddForce(0, holdJumpForce, 0, ForceMode.Impulse);
             isJumping = false;
         }
     }
@@ -176,25 +182,26 @@ public class PlayerController : MonoBehaviour {
     {
         RaycastHit hit;
         Vector3 raycastPosition = new Vector3(spawnControllerPosition, manager.levelHeight, 0);
-        Vector3 spawnPosition = new Vector3(spawnControllerPosition,6,0);
 
         if (Physics.Raycast(raycastPosition, Vector3.down, out hit, manager.levelHeight))
         {
             if (hit.collider.CompareTag("Block") && hit.collider.GetComponent<BlockController>().Locked && !hit.collider.GetComponent<BlockController>().IsCorrupted || hit.collider.CompareTag("Level"))
             {
-                spawnPosition = hit.point;
                 
+                if (spawnObject.CompareTag("Player"))
+                {
+                    spawnPosition.x = hit.point.x;
+                    spawnPosition.y = hit.point.y +2;
+                    spawnObject.transform.position = spawnPosition;
+                }
+                else if (spawnObject.CompareTag("Item"))
+                {
+                    GameObject.Instantiate(spawnObject, spawnPosition, Quaternion.Euler(0, 0, 0), spawnContainer);
+                }
+
             }      
         }
-        if (spawnObject.CompareTag("Player"))
-        {
-            spawnPosition.y += 2;
-            spawnObject.transform.position = spawnPosition;
-        }
-        else if (spawnObject.CompareTag("Item"))
-        {
-            GameObject.Instantiate(spawnObject, spawnPosition, Quaternion.Euler(0, 0, 0), spawnContainer);
-        }
+        
     }
     
     private void GroundCheck()
