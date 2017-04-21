@@ -1,3 +1,12 @@
+0.40.1
+
+-added Prototype Win Condition 
+	-if any player touches goal, game can be restarted
+-further improvements to Player Controls
+	-low and high jump
+	-Respawn must be casted to activate
+
+
 0.35.1
 
 -improvements to camera (up to 4 players included)

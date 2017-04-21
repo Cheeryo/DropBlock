@@ -56,7 +56,7 @@ public class BlockManager : MonoBehaviour
                 if (xPos == (manager.levelWidth * -2)) return;
                 GameObject.Instantiate(blockPrefab[4], new Vector3(xPos + 0.5f, manager.levelHeight -1, 0), Quaternion.Euler(0, 90, 0), blockContainer);
             }
-            else if (blockNumber >= 96 && blockNumber <= 100) // spawn 1x3 Block - 5%
+            else if (blockNumber >= 96 && blockNumber <= 100) // spawn 1x3 Block - 5%v
             {
                 xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth);
                 if (xPos == (manager.levelWidth * -2)) return;

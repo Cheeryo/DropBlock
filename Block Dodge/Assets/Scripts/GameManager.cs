@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] levels;
     [HideInInspector] public float levelWidth;
     [HideInInspector] public float levelHeight;
-
+    [SerializeField] private GameObject[] goals;
 	private void Start ()
     {
         SetPlayers();
@@ -84,5 +84,6 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
+        goals[levelNumber].SetActive(true);
     }
 }
