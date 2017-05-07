@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour {
     private float forwardInput;
     private RaycastHit spawnHit;
     private Vector3 raycastPosition;
-    private bool playerWon;
+    public GameObject playerModel;
 
     [Header("Interface")]
     public Text scoreText;
@@ -94,7 +94,6 @@ public class PlayerController : MonoBehaviour {
         itemButton = "UseItem_P" + playerNumber;
         spawnerRightButton = "SpawnerRight_P" + playerNumber;
         spawnerLeftButton = "SpawnerLeft_P" + playerNumber;
-        SetAnimator();
     }
 
     private void GetInput()
@@ -113,6 +112,7 @@ public class PlayerController : MonoBehaviour {
             if (Input.GetButtonUp(jumpButton))
             {
                 isSecondJumping = false;
+                isJumping = false;
             }
             if (Input.GetButtonDown(respawnButton))
             {
@@ -147,13 +147,14 @@ public class PlayerController : MonoBehaviour {
         SetUI();
         CheckRespawn();
         ForceRespawn();
-        SetAnimator();
+        
     }
 	
     private void FixedUpdate()
     {
         Move();
         Jump();
+        SetAnimator();
     }
 
     private void Move ()
@@ -166,7 +167,14 @@ public class PlayerController : MonoBehaviour {
         {
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
-        
+        if (forwardInput < 0)
+        {
+            playerModel.transform.rotation = Quaternion.Euler(0, -90, 0);
+        }
+        else if (forwardInput > 0)
+        {
+            playerModel.transform.rotation = Quaternion.Euler(0, 90, 0);
+        }
     }
 
     private void Jump ()
