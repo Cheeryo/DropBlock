@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour {
     private float score;
     private string winner;
     private Rigidbody rb;
+    private Animator playerAnimator;
     private Renderer playerRend;
     private Renderer spawnerRend;
     private float forwardInput;
@@ -80,6 +81,7 @@ public class PlayerController : MonoBehaviour {
     private void Start ()
     {
         rb = GetComponent<Rigidbody>();
+        playerAnimator = GetComponent<Animator>();
         playerRend = GetComponentInChildren<Renderer>();
         spawnerRend = spawnController.GetComponent<Renderer>();
         playerRend.enabled = spawnerRend.enabled = spawnPossible = true;
@@ -92,7 +94,8 @@ public class PlayerController : MonoBehaviour {
         itemButton = "UseItem_P" + playerNumber;
         spawnerRightButton = "SpawnerRight_P" + playerNumber;
         spawnerLeftButton = "SpawnerLeft_P" + playerNumber;
-}
+        SetAnimator();
+    }
 
     private void GetInput()
     {
@@ -132,10 +135,6 @@ public class PlayerController : MonoBehaviour {
             {
                 pressedLR = true;
             }
-            if (Input.GetButtonDown("Menu") && playerWon)
-            {
-                LoadByIndex(0);
-            }
         }
     }
 
@@ -148,6 +147,7 @@ public class PlayerController : MonoBehaviour {
         SetUI();
         CheckRespawn();
         ForceRespawn();
+        SetAnimator();
     }
 	
     private void FixedUpdate()
@@ -159,9 +159,14 @@ public class PlayerController : MonoBehaviour {
     private void Move ()
     {
         if (Mathf.Abs(forwardInput) > inputDelay) //move
-            rb.velocity = new Vector3(forwardInput * forwardVel,rb.velocity.y,0);
+        {
+            rb.velocity = new Vector3(forwardInput * forwardVel, rb.velocity.y, 0);
+        }
         else
-            rb.velocity = new Vector3(0,rb.velocity.y,0);
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        }
+        
     }
 
     private void Jump ()
@@ -183,6 +188,13 @@ public class PlayerController : MonoBehaviour {
             
              
         }
+    }
+
+    private void SetAnimator()
+    {
+        playerAnimator.SetFloat("MoveSpeed",forwardInput);
+        playerAnimator.SetBool("Grounded", isGrounded);
+        playerAnimator.SetBool("Jumping", isJumping);
     }
 
     private void SetUI()
@@ -362,11 +374,6 @@ public class PlayerController : MonoBehaviour {
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Goal"))
-        {
-            winner ="Player " + playerNumber + " wins";
-            playerWon = true;
-        }
  
     }
 

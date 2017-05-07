@@ -84,6 +84,5 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
-        goals[levelNumber].SetActive(true);
     }
 }
