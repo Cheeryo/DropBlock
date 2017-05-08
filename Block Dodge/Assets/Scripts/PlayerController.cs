@@ -230,7 +230,6 @@ public class PlayerController : MonoBehaviour {
         }
 
         scoreText.text = "Score: " + score.ToString();
-        winnerText.text = winner;
     }
 
     private void spawnMovementControl ()
@@ -352,7 +351,7 @@ public class PlayerController : MonoBehaviour {
         rb.angularVelocity = Vector3.zero;
         playerRend.sharedMaterial = playerMaterials[1];
         currentEnergy -= 20;
-        Invoke("Respawn",0.75f);
+        Invoke("Respawn",0.25f);
     }
 
     private void Respawn()
@@ -383,10 +382,5 @@ public class PlayerController : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
  
-    }
-
-    public void LoadByIndex(int sceneIndex)
-    {
-        SceneManager.LoadScene(sceneIndex);
     }
 }

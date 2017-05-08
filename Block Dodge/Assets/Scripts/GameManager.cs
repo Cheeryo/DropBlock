@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     {
         SetPlayers();
         SetLevel();
+        Time.timeScale = 1.1f;
         
     }
 
