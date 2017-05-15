@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
     private bool spawnPossible = true;
     private bool directionFacing;
     private Vector3 facingVector;
+    private bool movementPossible = true;
 
     [Header("Spawner")]
     [SerializeField] private GameObject spawnController;
@@ -178,13 +179,18 @@ public class PlayerController : MonoBehaviour {
 
     private void Move ()
     {
+        if (!movementPossible) return;
+
         if (Mathf.Abs(forwardInput) > inputDelay) //move
         {
             rb.velocity = new Vector3(forwardInput * forwardVel, rb.velocity.y, 0);
         }
         else
         {
-            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            if(!isGrounded)
+                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
+            else
+                rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
     }
 
@@ -249,9 +255,20 @@ public class PlayerController : MonoBehaviour {
     {
         if (canWallJump)
         {
-            rb.AddRelativeForce(0, 8, 0, ForceMode.VelocityChange);
-            isHanging = canWallJump = false;          
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            isHanging = canWallJump = false;
+            forwardInput = 0;
+            movementPossible = false;
+            rb.AddForce(new Vector3(10, 10, 0), ForceMode.Impulse);
+            StartCoroutine(AfterWallJump(.2f));
         }
+    }
+    
+    private IEnumerator AfterWallJump(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        movementPossible = true;
     }
 
     private void SetAnimator()
@@ -416,11 +433,11 @@ public class PlayerController : MonoBehaviour {
         {
             chargeTimer += Time.deltaTime;
             if (chargeTimer >= chargeMax)
-                {
+            {
                 chargeRespawn = false;
                 chargeTimer = 0;
                 Die();          
-                }
+            }
         }
     }
 
