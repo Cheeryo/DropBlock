@@ -122,7 +122,7 @@ public class BlockController : MonoBehaviour
     public void LockBlock()
     {
         Locked = true;
-        transform.position = new Vector3(transform.position.x, Mathf.Round(transform.position.y), transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         rb.isKinematic = true;
     }
 
@@ -136,6 +136,7 @@ public class BlockController : MonoBehaviour
     {
         isCorrupted = true;
         blockRend.sharedMaterial = corrupted;
+        gameObject.tag = "Corrupted Object";
         gameObject.layer = 9;
         LockBlock();
         Destroy(gameObject, 2.0f);

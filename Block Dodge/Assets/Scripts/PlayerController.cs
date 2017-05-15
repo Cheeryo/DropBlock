@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
@@ -21,15 +20,18 @@ public class PlayerController : MonoBehaviour {
 
     [Header("States")]
     [SerializeField] private bool isGrounded;
+    [SerializeField] private bool isMidAir;
     [SerializeField] private bool isJumping;
     [SerializeField] private bool isFirstJumping;
     [SerializeField] private bool isSecondJumping;
-    [SerializeField] private bool jumpUsed;
-    [SerializeField] private bool isMidAir;
     [SerializeField] private bool isHanging;
+    [SerializeField] private bool canWallJump;
+    private float wallJumpDirection;
     [SerializeField] private bool isRespawning;
     [SerializeField] private bool chargeRespawn;
     private bool spawnPossible = true;
+    private bool directionFacing;
+    private Vector3 facingVector;
 
     [Header("Spawner")]
     [SerializeField] private GameObject spawnController;
@@ -78,15 +80,17 @@ public class PlayerController : MonoBehaviour {
     private string spawnerRightButton = "SpawnerRight_P1";
     private string spawnerLeftButton = "SpawnerLeft_P1";
 
+    public GameObject headPosition;
+
     private void Start ()
     {
         rb = GetComponent<Rigidbody>();
         playerAnimator = GetComponent<Animator>();
         playerRend = GetComponentInChildren<Renderer>();
         spawnerRend = spawnController.GetComponent<Renderer>();
-        playerRend.enabled = spawnerRend.enabled = spawnPossible = true;
+        playerRend.enabled = spawnerRend.enabled = spawnPossible = directionFacing = true;
         forwardInput = 0;
-        pressedLR = pressedRR = chargeRespawn = false;
+        pressedLR = pressedRR = chargeRespawn = canWallJump = false;
         currentEnergy = maxEnergy;
         moveButton = "Horizontal_P" + playerNumber;
         jumpButton = "Jump_P" + playerNumber;
@@ -114,6 +118,10 @@ public class PlayerController : MonoBehaviour {
                 isSecondJumping = false;
                 isJumping = false;
             }
+            if (isHanging && !isMidAir && Input.GetButtonDown(jumpButton))
+            {
+                canWallJump = true;
+            }
             if (Input.GetButtonDown(respawnButton))
             {
                 chargeRespawn = true;
@@ -140,20 +148,31 @@ public class PlayerController : MonoBehaviour {
 
     private void Update()
     {
+        Debug.Log(isMidAir);
         GetInput();
+        PlayerDirection();
         GroundCheck();
+        WallCheck();
         spawnMovementControl();
         CheckSpawner();
         SetUI();
         CheckRespawn();
         ForceRespawn();
-        
+        if (isHanging)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 0, 0);
+        }
+        else
+        {
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
+        }
     }
 	
     private void FixedUpdate()
     {
         Move();
         Jump();
+        WallJump();
         SetAnimator();
     }
 
@@ -167,14 +186,44 @@ public class PlayerController : MonoBehaviour {
         {
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
+    }
+
+    private void PlayerDirection()
+    {
+        //DirectionFacing = true --> Character looking right
+        //DirectionFacing = false --> Character looking left
         if (forwardInput < 0)
         {
-            playerModel.transform.rotation = Quaternion.Euler(0, -90, 0);
+            directionFacing = true;
         }
         else if (forwardInput > 0)
         {
-            playerModel.transform.rotation = Quaternion.Euler(0, 90, 0);
+            directionFacing = false;
         }
+        if (directionFacing)
+        {
+            facingVector = Vector3.left;
+            if (isHanging)
+            {
+                playerModel.transform.rotation = Quaternion.Euler(0, 90, 0);
+            }
+            else if (!isHanging)
+            {
+                playerModel.transform.rotation = Quaternion.Euler(0, -90, 0);
+            }
+        }
+        else if (!directionFacing)
+        {
+            facingVector = Vector3.right;
+            if (isHanging)
+            {
+                playerModel.transform.rotation = Quaternion.Euler(0, -90, 0);
+            }
+            else if (!isHanging)
+            {
+                playerModel.transform.rotation = Quaternion.Euler(0, 90, 0);
+            }
+        }        
     }
 
     private void Jump ()
@@ -192,9 +241,16 @@ public class PlayerController : MonoBehaviour {
                 rb.AddForce(0, secondJumpForce, 0, ForceMode.Impulse);
                 isSecondJumping = false;
                 isJumping = false;
-            }
-            
-             
+            } 
+        }
+    }
+
+    private void WallJump()
+    {
+        if (canWallJump)
+        {
+            rb.AddRelativeForce(0, 8, 0, ForceMode.VelocityChange);
+            isHanging = canWallJump = false;          
         }
     }
 
@@ -203,6 +259,8 @@ public class PlayerController : MonoBehaviour {
         playerAnimator.SetFloat("MoveSpeed",forwardInput);
         playerAnimator.SetBool("Grounded", isGrounded);
         playerAnimator.SetBool("Jumping", isJumping);
+        playerAnimator.SetBool("Hanging", isHanging);
+        playerAnimator.SetBool("WallJumping", canWallJump);
     }
 
     private void SetUI()
@@ -312,19 +370,42 @@ public class PlayerController : MonoBehaviour {
             {
                 //isRespawning = false;
                 isGrounded = true;
-                isMidAir = false;
-                jumpUsed = false;
             }
             else
             {
                 isGrounded = false;
-                isMidAir = true;
             }
         }
         else
         {
             isGrounded = false;
-            isMidAir = true;
+        }
+    }
+
+    private void WallCheck()
+    {
+        RaycastHit hit;
+        Debug.DrawRay(headPosition.transform.position, facingVector, Color.red);
+        if (Physics.Raycast(headPosition.transform.position, facingVector, out hit, 0.3f) && !canWallJump)
+        {
+            if ((hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block")) && !isGrounded)
+            {
+                isHanging = true;
+            }
+            else
+            {
+                if (isMidAir)
+                {
+                    isHanging = false;
+                }               
+            }
+        }
+        else
+        {
+            if (isMidAir)
+            {
+                isHanging = false;
+            }
         }
     }
 
@@ -373,11 +454,16 @@ public class PlayerController : MonoBehaviour {
         */
         if (col.collider.CompareTag("Block") && col.contacts[0].point.y > transform.position.y && !col.collider.GetComponent<BlockController>().Locked)
         {
-            Debug.Log("You were squeezed by a cube!");
             currentEnergy -= 10;
             //Locks (freezes) the cube to prevent bugs in the editor -> will not be needed later due to players death on this event
             col.gameObject.GetComponent<BlockController>().DespawnBlock();
         }
+        isMidAir = false;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        isMidAir = true;
     }
     private void OnTriggerEnter(Collider other)
     {

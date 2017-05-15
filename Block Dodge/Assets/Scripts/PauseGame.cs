@@ -32,7 +32,7 @@ public class PauseGame : MonoBehaviour {
         {
             Debug.Log("3");
             PauseMenu.SetActive(false);
-            Time.timeScale = 1.1f;
+            Time.timeScale = 1;
             for (int i = 0; i < 4; i++)
             {
                 Player[i].GetComponentInChildren<PlayerController>().enabled = true;
