@@ -13,6 +13,9 @@ public class BlockController : MonoBehaviour
 
     private Rigidbody rb;
     private Renderer blockRend;
+    public float blockLength;
+    public float blockHeigth;
+    public float positionOffset;
 
     public bool Locked
     {
@@ -59,7 +62,7 @@ public class BlockController : MonoBehaviour
     private float DeclareFallSpeed()
     {
         float blockFallSpeed = 0;
-        int declareNumber = (int) Random.Range(0.0f, 100.0f);
+        int declareNumber = (int) Random.Range(1, 101);
         if (declareNumber == 1 || declareNumber == 2) // 2%
         {
             blockFallSpeed = -1.0f;
@@ -111,7 +114,10 @@ public class BlockController : MonoBehaviour
     {
         if (other.CompareTag("Block") || other.CompareTag("Level"))
         {
-            LockBlock();
+            if (!locked)
+            {
+                LockBlock();
+            }            
         }
         if (other.CompareTag("Player"))
         {
@@ -119,10 +125,21 @@ public class BlockController : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Block"))
+        {
+            if (locked)
+            {
+                UnlockBlock();
+            }
+        }        
+    }
+
     public void LockBlock()
     {
         Locked = true;
-        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        transform.position = new Vector3(transform.position.x, Mathf.Round(transform.position.y) + positionOffset, transform.position.z);
         rb.isKinematic = true;
     }
 

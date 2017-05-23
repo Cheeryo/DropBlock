@@ -18,7 +18,7 @@ public class PauseGame : MonoBehaviour {
     public void Pause()
     {
         Debug.Log("1");
-        if (!PauseMenu.active)
+        if (!PauseMenu.activeSelf)
         {
             Debug.Log("2");
             PauseMenu.SetActive(true);
@@ -28,7 +28,7 @@ public class PauseGame : MonoBehaviour {
                 Player[i].GetComponentInChildren<PlayerController>().enabled = false;
             }
         }
-        else if (PauseMenu.active)
+        else if (PauseMenu.activeSelf)
         {
             Debug.Log("3");
             PauseMenu.SetActive(false);

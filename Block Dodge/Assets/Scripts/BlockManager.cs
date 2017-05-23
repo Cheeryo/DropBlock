@@ -5,66 +5,104 @@ using UnityEngine;
 public class BlockManager : MonoBehaviour
 {
     [SerializeField] private Transform blockContainer;
-    [SerializeField] private GameObject[] blockPrefab;
 
     [SerializeField][Range(1,20)] private float interval;
     [SerializeField] private GameManager manager;
     private float currentInterval;
 
-    private void Start ()
+    [System.Serializable]
+    public class BlockReferences
     {
-
+        public GameObject blockPrefab;
+        public float blockLength;
+        public float blockHeigth;
     }
+
+    [SerializeField] private BlockReferences[] blocks;
+
+    private int rightSpawnBoundary;
+    private int leftSpawnBoundary;
+    private float spawnPosition;
+    private int blockL;
 	
 	private void Update ()
     {
         currentInterval += Time.deltaTime;
-		if(currentInterval >= interval)
+        if (currentInterval >= interval)
         {
-            currentInterval = 0;
-
-            int blockNumber = (int)Random.Range(0.0f, 100.0f);
+            int blockNumber = 0;
             float xPos;
-
-            if (blockNumber >= 1 && blockNumber <= 5) // spawn 3x1 Block - 5%
+            currentInterval = 0;
+            int blockPoolNumber = GetBlockPool();
+            if (blockPoolNumber == 1)
             {
-                xPos = CalculatePosition((int)-manager.levelWidth+1, (int)manager.levelWidth-2, 3); 
-                if (xPos == (manager.levelWidth *-2)) return; //if there's no free position to spawn, no block will be spawned
-                GameObject.Instantiate(blockPrefab[0], new Vector3(xPos + 1.5f, manager.levelHeight, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                blockNumber = (int)Random.Range(0, 8);
             }
-            else if (blockNumber >= 6 && blockNumber <= 27) // spawn 2x1 Block - 22%
+            else if (blockPoolNumber == 2)
             {
-                xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth -1, 2);
-                if (xPos == (manager.levelWidth * -2)) return;
-                GameObject.Instantiate(blockPrefab[1], new Vector3(xPos + 1, manager.levelHeight, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                blockNumber = (int)Random.Range(8, 32);
             }
-            else if (blockNumber >= 28 && blockNumber <= 45) // spawn 2x2 Block - 18%
+            else if (blockPoolNumber == 3)
             {
-                xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth -1, 2);
-                if (xPos == (manager.levelWidth * -2)) return;
-                GameObject.Instantiate(blockPrefab[2], new Vector3(xPos + 1, manager.levelHeight -1, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                blockNumber = (int)Random.Range(32, 87);
             }
-            else if (blockNumber >= 46 && blockNumber <= 73) // spawn 1x1 Block - 28%
+            else if (blockPoolNumber == 4)
             {
-                xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth);
-                if (xPos == (manager.levelWidth * -2)) return; 
-                GameObject.Instantiate(blockPrefab[3], new Vector3(xPos + 0.5f, manager.levelHeight, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                blockNumber = (int)Random.Range(87, 157);
             }
-            else if (blockNumber >= 74 && blockNumber <= 95) // spawn 1x2 Block - 22%
+            Debug.Log(blockNumber);
+            if (blocks[blockNumber].blockLength == 1 || blocks[blockNumber].blockLength == 2)
             {
-                xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth);
-                if (xPos == (manager.levelWidth * -2)) return;
-                GameObject.Instantiate(blockPrefab[4], new Vector3(xPos + 0.5f, manager.levelHeight -1, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                rightSpawnBoundary = (int)-manager.levelWidth +1;
+                leftSpawnBoundary = (int)manager.levelWidth-1;
             }
-            else if (blockNumber >= 96 && blockNumber <= 100) // spawn 1x3 Block - 5%v
+            else if (blocks[blockNumber].blockLength == 3)
             {
-                xPos = CalculatePosition((int)-manager.levelWidth, (int)manager.levelWidth);
-                if (xPos == (manager.levelWidth * -2)) return;
-                GameObject.Instantiate(blockPrefab[5], new Vector3(xPos + 0.5f, manager.levelHeight -2, 0), Quaternion.Euler(0, 90, 0), blockContainer);
+                rightSpawnBoundary = (int)-manager.levelWidth +2;
+                leftSpawnBoundary = (int)manager.levelWidth -2;
             }
+            else if (blocks[blockNumber].blockLength == 4)
+            {
+                rightSpawnBoundary = (int)-manager.levelWidth +2;
+                leftSpawnBoundary = (int)manager.levelWidth - 2;
+            }
+            blockL = (int)blocks[blockNumber].blockLength;
+            xPos = CalculatePosition(rightSpawnBoundary, leftSpawnBoundary, blockL);
+            if (xPos == (manager.levelWidth * -2)) return;
+            if (blocks[blockNumber].blockLength == 1 || blocks[blockNumber].blockLength == 3)
+            {
+                spawnPosition = xPos + 0.5f;
+            }
+            else if (blocks[blockNumber].blockLength == 2 || blocks[blockNumber].blockLength == 4)
+            {
+                spawnPosition = xPos;
+            }
+            GameObject.Instantiate(blocks[blockNumber].blockPrefab, new Vector3(spawnPosition, manager.levelHeight, 0), Quaternion.Euler(0, 0, 0), blockContainer);
+     
         }
 	}
-
+    private int GetBlockPool()
+    {
+        int blockPool = 0;
+        int blockPoolNumber = (int)Random.Range(1, 19);
+        if (blockPoolNumber < 7)
+        {
+            blockPool = 1;
+        }
+        else if (blockPoolNumber > 6 && blockPoolNumber < 12)
+        {
+            blockPool = 2;
+        }
+        else if (blockPoolNumber > 11 && blockPoolNumber < 16)
+        {
+            blockPool = 3;
+        }
+        else if (blockPoolNumber > 15)
+        {
+            blockPool = 4;
+        }
+        return blockPool;
+    }
 
     /// <summary>
     /// Returns a new X Position where the column is not blocked by another block.
