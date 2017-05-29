@@ -20,10 +20,15 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public float levelWidth;
     [HideInInspector] public float levelHeight;
     [SerializeField] private GameObject[] goals;
+    private StartCountdown countdown;
+
+
 	private void Start ()
     {
+        countdown = GetComponent<StartCountdown>();
         SetPlayers();
         SetLevel();
+        StartCoroutine(countdown.GameCountdown());
         
     }
 

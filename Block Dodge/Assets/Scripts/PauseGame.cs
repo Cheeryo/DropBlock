@@ -6,9 +6,14 @@ public class PauseGame : MonoBehaviour {
 
     public GameObject PauseMenu;
     public GameObject[] Player;
-	
-	// Update is called once per frame
-	void Update () {
+    private StartCountdown countdown;
+
+    private void Start()
+    {
+        countdown = GetComponent<StartCountdown>();
+    }
+
+    void Update () {
 		if (Input.GetButtonDown("Menu"))
         {
             Pause();
@@ -17,10 +22,8 @@ public class PauseGame : MonoBehaviour {
 
     public void Pause()
     {
-        Debug.Log("1");
         if (!PauseMenu.activeSelf)
         {
-            Debug.Log("2");
             PauseMenu.SetActive(true);
             Time.timeScale = 0;
             for (int i = 0; i < 4; i++)
@@ -30,13 +33,13 @@ public class PauseGame : MonoBehaviour {
         }
         else if (PauseMenu.activeSelf)
         {
-            Debug.Log("3");
             PauseMenu.SetActive(false);
             Time.timeScale = 1;
             for (int i = 0; i < 4; i++)
             {
                 Player[i].GetComponentInChildren<PlayerController>().enabled = true;
             }
+            StartCoroutine(countdown.GameCountdown());
         }  
     }
 }

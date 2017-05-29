@@ -51,14 +51,19 @@ public class BlockManager : MonoBehaviour
                 blockNumber = (int)Random.Range(87, 157);
             }
             Debug.Log(blockNumber);
-            if (blocks[blockNumber].blockLength == 1 || blocks[blockNumber].blockLength == 2)
+            if (blocks[blockNumber].blockLength == 1)
+            {
+                rightSpawnBoundary = (int)-manager.levelWidth;
+                leftSpawnBoundary = (int)manager.levelWidth -1;
+            }
+            else if (blocks[blockNumber].blockLength == 2)
             {
                 rightSpawnBoundary = (int)-manager.levelWidth +1;
-                leftSpawnBoundary = (int)manager.levelWidth-1;
+                leftSpawnBoundary = (int)manager.levelWidth - 1;
             }
             else if (blocks[blockNumber].blockLength == 3)
             {
-                rightSpawnBoundary = (int)-manager.levelWidth +2;
+                rightSpawnBoundary = (int)-manager.levelWidth +1;
                 leftSpawnBoundary = (int)manager.levelWidth -2;
             }
             else if (blocks[blockNumber].blockLength == 4)

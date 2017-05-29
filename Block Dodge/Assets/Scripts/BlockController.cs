@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlockController : MonoBehaviour
 {
 
-    public Material corrupted;
+    public Material[] materials;
 
     private Vector3 fallSpeed;
     private bool locked;
@@ -16,6 +16,10 @@ public class BlockController : MonoBehaviour
     public float blockLength;
     public float blockHeigth;
     public float positionOffset;
+    public float energyMinus;
+    public float scoreMinus;
+    public enum State { Normal,Charge,Magnet,Pulse,Virus }
+    public State blockState;
 
     public bool Locked
     {
@@ -49,6 +53,7 @@ public class BlockController : MonoBehaviour
         blockRend.enabled = true;
         fallSpeed = new Vector3(0, DeclareFallSpeed(), 0);
         isCorrupted = false;
+        GetBlockState();
     }
 	
 	private void Update ()
@@ -56,49 +61,38 @@ public class BlockController : MonoBehaviour
         if (!Locked)
         {
             transform.Translate(fallSpeed * Time.deltaTime);
-        }
+        }        
     }
 
     private float DeclareFallSpeed()
     {
         float blockFallSpeed = 0;
-        int declareNumber = (int) Random.Range(1, 101);
-        if (declareNumber == 1 || declareNumber == 2) // 2%
-        {
-            blockFallSpeed = -1.0f;
-        }
-        else if (declareNumber >= 3 && declareNumber <= 6) // 4%
-        {
-            blockFallSpeed = -2.0f;
-        }
-        else if (declareNumber >= 7 && declareNumber <= 16) // 10%
-        {
-            blockFallSpeed = -3.0f;
-        }
-        else if (declareNumber >= 17 && declareNumber <= 32) // 16%
+        int declareNumber = (int) Random.Range(0,6);
+        if (declareNumber == 0)
         {
             blockFallSpeed = -4.0f;
         }
-        else if (declareNumber >= 33 && declareNumber <= 68) // 36%
+        else if (declareNumber == 1) // 4%
         {
             blockFallSpeed = -5.0f;
         }
-        else if (declareNumber >= 69 && declareNumber <= 84) // 16%
+        else if (declareNumber == 2) // 4%
         {
             blockFallSpeed = -6.0f;
         }
-        else if (declareNumber >= 85 && declareNumber <= 94) // 10%
+        else if (declareNumber == 3) // 4%
         {
             blockFallSpeed = -7.0f;
         }
-        else if (declareNumber >= 95 && declareNumber <= 98) // 4%
+        else if (declareNumber == 4) // 4%
         {
             blockFallSpeed = -8.0f;
         }
-        else if (declareNumber == 99 || declareNumber == 100) // 2%
+        else if (declareNumber == 5) // 4%
         {
-            blockFallSpeed = -10.0f;
+            blockFallSpeed = -9.0f;
         }
+
         return blockFallSpeed;
     }
 
@@ -121,7 +115,7 @@ public class BlockController : MonoBehaviour
         }
         if (other.CompareTag("Player"))
         {
-            //Destroy(gameObject,1);
+            
         }
     }
 
@@ -134,6 +128,26 @@ public class BlockController : MonoBehaviour
                 UnlockBlock();
             }
         }        
+    }
+
+    private void GetBlockState()
+    {
+        int hasState = (int)Random.Range(1,6);
+        if (hasState == 1)
+        {
+            int stateNumber = (int)Random.Range(1, 2);
+            if (stateNumber == 1)
+            {
+                blockState = State.Charge;
+            }
+        }
+
+        switch (blockState)
+        {
+            case State.Charge:
+                blockRend.sharedMaterial = materials[1];
+                break;
+        }
     }
 
     public void LockBlock()
@@ -152,7 +166,8 @@ public class BlockController : MonoBehaviour
     public void DespawnBlock ()
     {
         isCorrupted = true;
-        blockRend.sharedMaterial = corrupted;
+        blockRend.sharedMaterial = materials[0];
+        Debug.Log("kakka");
         gameObject.tag = "Corrupted Object";
         gameObject.layer = 9;
         LockBlock();

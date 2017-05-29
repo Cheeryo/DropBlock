@@ -14,9 +14,13 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private float forwardVel = 9;
     [SerializeField] private float firstJumpForce = 7;
     [SerializeField] private float secondJumpForce = 3;
-    private float timer;
+    private float jumpTimer;
+    private float energyTimer;
+    private float scoreTimer;
 
     private float currentEnergy;
+    private float energyDrain;
+    private float scoreGain;
 
     [Header("States")]
     [SerializeField] private bool isGrounded;
@@ -45,22 +49,13 @@ public class PlayerController : MonoBehaviour {
     private bool pressedLR;
     private bool pressedRR;
 
-    [SerializeField] private float chargeMax;
-    private float chargeTimer;
-
-    [Header("Misc")]
+    [Header("Materials")]
     [SerializeField] private Material[] playerMaterials;
     [SerializeField] private Material[] spawnerMaterials;
 
-    private float score = 100;
-    private string winner;
-    private Rigidbody rb;
-    private Animator playerAnimator;
-    private Renderer playerRend;
-    private Renderer spawnerRend;
-    private float forwardInput;
-    private RaycastHit spawnHit;
-    private Vector3 raycastPosition;
+    
+    
+
     public GameObject playerModel;
 
     [Header("Interface")]
@@ -74,7 +69,17 @@ public class PlayerController : MonoBehaviour {
     public Slider chargeSlider;
     public Image chargeSliderBar;
     public Color chargeSliderColor;
+    [SerializeField] private float chargeMax;
+    private float chargeTimer;
+    private float score = 0;
 
+    private Rigidbody rb;
+    private Animator playerAnimator;
+    private Renderer playerRend;
+    private Renderer spawnerRend;
+    private float forwardInput;
+    private RaycastHit spawnHit;
+    private Vector3 raycastPosition;
     private string moveButton;
     private string jumpButton = "Jump_P1";
     private string respawnButton = "Respawn_P1";
@@ -110,7 +115,7 @@ public class PlayerController : MonoBehaviour {
 
             if (!isHanging && isGrounded && Input.GetButtonDown(jumpButton))
             {
-                timer = 0f;
+                jumpTimer = 0f;
                 
                 isJumping = true;
                 isFirstJumping = true;
@@ -161,14 +166,7 @@ public class PlayerController : MonoBehaviour {
         SetUI();
         CheckRespawn();
         ForceRespawn();
-        if (isHanging)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, 0, 0);
-        }
-        else
-        {
-            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
-        }
+        EnergyScoreManagement();
     }
 	
     private void FixedUpdate()
@@ -222,12 +220,12 @@ public class PlayerController : MonoBehaviour {
             if (isHanging)
             {
                 playerModel.transform.rotation = Quaternion.Euler(0, 90, 0);
-                wallJumpVector = new Vector3(6, 8, 0);
+                wallJumpVector = new Vector3(4, 10, 0);
             }
             else if (!isHanging)
             {
                 playerModel.transform.rotation = Quaternion.Euler(0, -90, 0);
-                wallJumpVector = new Vector3(0,0, 0);
+                wallJumpVector = new Vector3(0, 0, 0);
             }
         }
         else if (!directionFacing)
@@ -236,29 +234,31 @@ public class PlayerController : MonoBehaviour {
             if (isHanging)
             {
                 playerModel.transform.rotation = Quaternion.Euler(0, -90, 0);
-                wallJumpVector = new Vector3(-6,8, 0);
+                wallJumpVector = new Vector3(-4, 10, 0);
             }
             else if (!isHanging)
             {
                 playerModel.transform.rotation = Quaternion.Euler(0, 90, 0);
-                wallJumpVector = new Vector3(0,0, 0);
+                wallJumpVector = new Vector3(0, 0, 0);
             }
         }        
     }
 
     private void Jump ()
     {
-        timer += Time.deltaTime;
+        jumpTimer += Time.deltaTime;
         if (isJumping)
         {
             jumpControl = true;
             if (isFirstJumping)
             {
+                currentEnergy -= 2;
                 rb.AddForce(0, firstJumpForce, 0, ForceMode.Impulse);
                 isFirstJumping = false;
             }            
-            if (isSecondJumping && timer > 0.1f)
+            if (isSecondJumping && jumpTimer > 0.1f)
             {
+                currentEnergy -= 4;
                 rb.AddForce(0, secondJumpForce, 0, ForceMode.Impulse);
                 isSecondJumping = false;
                 isJumping = false;
@@ -275,6 +275,7 @@ public class PlayerController : MonoBehaviour {
             isHanging = canWallJump = false;
             forwardInput = 0;
             movementPossible = false;
+            currentEnergy -= 3;
             rb.AddForce(wallJumpVector, ForceMode.Impulse);
             StartCoroutine(AfterWallJump(.15f));
         }
@@ -319,7 +320,7 @@ public class PlayerController : MonoBehaviour {
             energyBar.color = energyAbove0;
         }
 
-        if (score < 10)
+        if (score < 10 && score >= 0)
         {
             scoreText.text = "000"+ score.ToString();
         }
@@ -334,6 +335,68 @@ public class PlayerController : MonoBehaviour {
         else if (score > 999)
         {
             scoreText.text = score.ToString();
+        }
+        if (score < 0)
+        {
+            score = 0;
+        }
+    }
+
+    private void EnergyScoreManagement()
+    {
+        if (currentEnergy > maxEnergy)
+        {
+            currentEnergy = maxEnergy;
+        }
+        if (currentEnergy <= 0)
+        {
+            currentEnergy = 0;
+        }
+        energyTimer += Time.deltaTime;
+        scoreTimer += Time.deltaTime;
+
+        if (forwardInput == 0 && !isHanging)
+        {
+            energyDrain = 1;
+        }
+        else if ((forwardInput > 0 || forwardInput < 0) && !isHanging)
+        {
+            energyDrain = 2;
+        }
+        else if (isHanging)
+        {
+            energyDrain = 3;
+        }
+
+        if (energyTimer >= 2.5)
+        {
+            energyTimer = 0;
+            currentEnergy -= energyDrain;            
+        }
+        if (scoreTimer >= 2.5)
+        {
+            scoreTimer = 0;
+            score += scoreGain;
+        }
+        if (currentEnergy > 80)
+        {
+            scoreGain = 25;
+        }
+        else if (currentEnergy < 81 && currentEnergy > 50)
+        {
+            scoreGain = 20;
+        }
+        else if (currentEnergy < 51 && currentEnergy > 20)
+        {
+            scoreGain = 10;
+        }
+        else if (currentEnergy < 21 && currentEnergy > 0)
+        {
+            scoreGain = 5;
+        }
+        else if (currentEnergy == 0)
+        {
+            scoreGain = -15;
         }
     }
 
@@ -437,7 +500,7 @@ public class PlayerController : MonoBehaviour {
     {
         RaycastHit hit;
         Debug.DrawRay(headPosition.transform.position, facingVector, Color.red);
-        if (Physics.Raycast(headPosition.transform.position, facingVector, out hit, 0.3f) && !canWallJump)
+        if (Physics.Raycast(headPosition.transform.position, facingVector, out hit, 0.3f) && !canWallJump && !isGrounded)
         {
             if ((hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block")))
             {
@@ -482,7 +545,7 @@ public class PlayerController : MonoBehaviour {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         playerRend.sharedMaterial = playerMaterials[1];
-        currentEnergy -= 20;
+        currentEnergy -= 40;
         Invoke("Respawn",0.25f);
     }
 
@@ -503,12 +566,7 @@ public class PlayerController : MonoBehaviour {
             # the collision point was within the upper half of the player -> cube above player
             # the cube is currently falling
         */
-        if (col.collider.CompareTag("Block") && col.contacts[0].point.y > transform.position.y && !col.collider.GetComponent<BlockController>().Locked)
-        {
-            currentEnergy -= 10;
-            //Locks (freezes) the cube to prevent bugs in the editor -> will not be needed later due to players death on this event
-            col.gameObject.GetComponent<BlockController>().DespawnBlock();
-        }
+        
         isMidAir = false;
     }
 
@@ -518,6 +576,11 @@ public class PlayerController : MonoBehaviour {
     }
     private void OnTriggerEnter(Collider other)
     {
- 
+        if (other.CompareTag("Block")  && !other.GetComponent<BlockController>().Locked)
+        {
+            currentEnergy -= other.gameObject.GetComponent<BlockController>().energyMinus;
+            score -= other.gameObject.GetComponent<BlockController>().scoreMinus;
+            other.gameObject.GetComponent<BlockController>().DespawnBlock();
+        }
     }
 }
