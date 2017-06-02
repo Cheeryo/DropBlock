@@ -20,6 +20,7 @@ public class BlockController : MonoBehaviour
     public float scoreMinus;
     public enum State { Normal,Charge,Magnet,Pulse,Virus }
     public State blockState;
+    public bool blockReload = false;
 
     public bool Locked
     {
@@ -54,6 +55,7 @@ public class BlockController : MonoBehaviour
         fallSpeed = new Vector3(0, DeclareFallSpeed(), 0);
         isCorrupted = false;
         GetBlockState();
+        BlockStates();
     }
 	
 	private void Update ()
@@ -96,40 +98,6 @@ public class BlockController : MonoBehaviour
         return blockFallSpeed;
     }
 
-    private void OnCollisionEnter(Collision col)
-    {
-        if (col.collider.CompareTag("Block") || col.collider.CompareTag("Level"))
-        {
-
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Block") || other.CompareTag("Level"))
-        {
-            if (!locked)
-            {
-                LockBlock();
-            }            
-        }
-        if (other.CompareTag("Player"))
-        {
-            
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Block"))
-        {
-            if (locked)
-            {
-                UnlockBlock();
-            }
-        }        
-    }
-
     private void GetBlockState()
     {
         int hasState = (int)Random.Range(1,6);
@@ -140,14 +108,22 @@ public class BlockController : MonoBehaviour
             {
                 blockState = State.Charge;
             }
-        }
+        }        
+    }
 
+    private void BlockStates()
+    {
         switch (blockState)
         {
             case State.Charge:
                 blockRend.sharedMaterial = materials[1];
                 break;
         }
+    }
+
+    private void BlockReactivate()
+    {
+        blockReload = false;
     }
 
     public void LockBlock()
@@ -167,10 +143,48 @@ public class BlockController : MonoBehaviour
     {
         isCorrupted = true;
         blockRend.sharedMaterial = materials[0];
-        Debug.Log("kakka");
         gameObject.tag = "Corrupted Object";
         gameObject.layer = 9;
         LockBlock();
         Destroy(gameObject, 2.0f);
+    }
+
+    private void OnCollisionEnter(Collision col)
+    {
+        if (col.collider.CompareTag("Block") || col.collider.CompareTag("Level"))
+        {
+
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Block") || other.CompareTag("Level"))
+        {
+            if (!locked)
+            {
+                LockBlock();
+            }
+        }
+        if (other.CompareTag("Player") && locked)
+        {
+            if (blockState == State.Charge && other.gameObject.GetComponent<PlayerController>().currentEnergy < 90 && !blockReload)
+            {
+                other.gameObject.GetComponent<PlayerController>().currentEnergy = other.gameObject.GetComponent<PlayerController>().maxEnergy;
+                blockReload = true;
+                Invoke("BlockReactivate", 1.5f);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Block"))
+        {
+            if (locked)
+            {
+                UnlockBlock();
+            }
+        }
     }
 }

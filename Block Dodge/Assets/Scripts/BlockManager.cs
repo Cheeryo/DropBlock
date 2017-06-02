@@ -50,7 +50,6 @@ public class BlockManager : MonoBehaviour
             {
                 blockNumber = (int)Random.Range(87, 157);
             }
-            Debug.Log(blockNumber);
             if (blocks[blockNumber].blockLength == 1)
             {
                 rightSpawnBoundary = (int)-manager.levelWidth;

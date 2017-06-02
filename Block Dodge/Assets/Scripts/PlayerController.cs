@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private float inputDelay = 0.05f;
 
     [Header("Stats")]
-    [SerializeField] private float maxEnergy = 100f;
+    [SerializeField] public float maxEnergy = 100f;
     [SerializeField] private float forwardVel = 9;
     [SerializeField] private float firstJumpForce = 7;
     [SerializeField] private float secondJumpForce = 3;
@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour {
     private float energyTimer;
     private float scoreTimer;
 
-    private float currentEnergy;
+    [HideInInspector] public float currentEnergy;
     private float energyDrain;
     private float scoreGain;
 
@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour {
     private float wallJumpDirection;
     [SerializeField] private bool isRespawning;
     [SerializeField] private bool chargeRespawn;
+    public bool goalReached;
     private bool spawnPossible = true;
     private bool directionFacing;
     private Vector3 facingVector;
@@ -158,15 +159,20 @@ public class PlayerController : MonoBehaviour {
     private void Update()
     {
         GetInput();
-        PlayerDirection();
-        GroundCheck();
-        WallCheck();
-        spawnMovementControl();
-        CheckSpawner();
-        SetUI();
-        CheckRespawn();
-        ForceRespawn();
-        EnergyScoreManagement();
+        if (!goalReached)
+        {
+            PlayerDirection();
+            GroundCheck();
+            WallCheck();
+            spawnMovementControl();
+            CheckSpawner();
+            SetUI();
+            CheckRespawn();
+            ForceRespawn();
+            EnergyScoreManagement();
+        }
+        
+        GameWon();
     }
 	
     private void FixedUpdate()
@@ -199,6 +205,10 @@ public class PlayerController : MonoBehaviour {
         else
         {
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
+        }
+        if (goalReached)
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, forwardInput * forwardVel);
         }
     }
 
@@ -397,6 +407,15 @@ public class PlayerController : MonoBehaviour {
         else if (currentEnergy == 0)
         {
             scoreGain = -15;
+        }
+    }
+
+    private void GameWon()
+    {
+        if (goalReached)
+        {
+            gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+            forwardInput = 0.2f;
         }
     }
 

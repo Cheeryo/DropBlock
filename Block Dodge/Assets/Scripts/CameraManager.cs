@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    [HideInInspector] public List<PlayerController> players = new List<PlayerController>();
+    public List<PlayerController> players = new List<PlayerController>();
 
     [SerializeField] private float lerpSpeed;
     [SerializeField] private float zoomMultiplier;
