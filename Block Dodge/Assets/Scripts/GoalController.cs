@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class GoalController : MonoBehaviour {
 
-    private bool isPlayerInGoal = false;
+    public bool isPlayerInGoal = false;
     private Animator goalAnimator;
     private float goalTimer;
     private bool goalOpen;
+    [SerializeField] private GameManager manager;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 
         goalAnimator = GetComponentInChildren<Animator>();
 
@@ -20,7 +21,10 @@ public class GoalController : MonoBehaviour {
 	void Update () {
 		if (isPlayerInGoal)
         {
-            goalTimer += Time.deltaTime;
+            if (!goalOpen)
+            {
+                goalTimer += Time.deltaTime;
+            }            
         }
         else if (!isPlayerInGoal)
         {
@@ -29,7 +33,10 @@ public class GoalController : MonoBehaviour {
         if (goalTimer >= 1.5f)
         {
             goalOpen = true;
+            manager.goalScore /= 2;
+            goalTimer = 0;
         }
+        Debug.Log(manager.goalScore);
 	}
 
     void FixedUpdate()
@@ -58,6 +65,16 @@ public class GoalController : MonoBehaviour {
             }
         }
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && goalOpen)
+        {
+            other.gameObject.GetComponent<PlayerController>().score += manager.goalScore;
+            other.gameObject.GetComponent<PlayerController>().goalReached = true;
+        }
+    }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))

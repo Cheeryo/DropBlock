@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour {
     public Color chargeSliderColor;
     [SerializeField] private float chargeMax;
     private float chargeTimer;
-    private float score = 0;
+    public float score = 0;
 
     private Rigidbody rb;
     private Animator playerAnimator;

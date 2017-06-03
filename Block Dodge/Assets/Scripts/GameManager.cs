@@ -16,9 +16,13 @@ public class GameManager : MonoBehaviour
     [Header("Level")]
     //[SerializeField] private BlockManager blockM;
     [SerializeField] private Transform levelContainer;
+    [SerializeField] private Transform goalContainer;
     [SerializeField] private GameObject[] levels;
     [HideInInspector] public float levelWidth;
     [HideInInspector] public float levelHeight;
+    public float goalScore;
+    public int playerCount;
+    public int levelNumber;
     [SerializeField] private GameObject[] goals;
     private StartCountdown countdown;
 
@@ -34,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     private void SetPlayers()
     {
-        int playerCount = 4;
+        playerCount = 4;
 
         try
         {
@@ -55,11 +59,28 @@ public class GameManager : MonoBehaviour
             if (p.active)
                 c.players.Add(p.controller);
         }
+
+        switch (playerCount)
+        {
+            case 1:
+                goalScore = 200;
+                break;                
+            case 2:
+                goalScore = 400;
+                break;
+            case 3:
+                goalScore = 700;
+                break;
+            case 4:
+                goalScore = 900;
+                break;
+
+        }
     }
 
     private void SetLevel()
     {
-        int levelNumber = 0;
+        levelNumber = 0;
 
         try
         {
@@ -89,5 +110,6 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
+        goals[levelNumber].gameObject.SetActive(true);
     }
 }
