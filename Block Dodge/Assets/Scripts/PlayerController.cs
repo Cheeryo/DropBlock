@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Items;
 
 public class PlayerController : MonoBehaviour {
 
@@ -53,10 +54,7 @@ public class PlayerController : MonoBehaviour {
     [Header("Materials")]
     [SerializeField] private Material[] playerMaterials;
     [SerializeField] private Material[] spawnerMaterials;
-
     
-    
-
     public GameObject playerModel;
 
     [Header("Interface")]
@@ -89,6 +87,9 @@ public class PlayerController : MonoBehaviour {
     private string spawnerLeftButton = "SpawnerLeft_P1";
 
     public GameObject headPosition;
+
+    [Header("Items")]
+    [SerializeField] private Item item;
 
     private void Start ()
     {
@@ -141,9 +142,9 @@ public class PlayerController : MonoBehaviour {
                 chargeRespawn = false;
                 chargeTimer = 0;
             }
-            if (Input.GetButtonDown(itemButton))
+            if (item != null && Input.GetButtonDown(itemButton))
             {
-
+                UseItem();
             }
             if (!pressedRR && Input.GetButtonDown(spawnerRightButton))
             {
@@ -559,7 +560,7 @@ public class PlayerController : MonoBehaviour {
             {
                 chargeRespawn = false;
                 chargeTimer = 0;
-                Die();          
+                Die();       
             }
         }
     }
@@ -600,6 +601,7 @@ public class PlayerController : MonoBehaviour {
     {
         isMidAir = true;
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Block")  && !other.GetComponent<BlockController>().Locked)
@@ -608,5 +610,69 @@ public class PlayerController : MonoBehaviour {
             score -= other.gameObject.GetComponent<BlockController>().scoreMinus;
             other.gameObject.GetComponent<BlockController>().DespawnBlock();
         }
+        else if(other.CompareTag("Item") && item == null)
+        {
+            PickUpItem(other.gameObject);
+        }
+    }
+
+    private void PickUpItem(GameObject itemObject)
+    {
+        Item i = null;
+        if (itemObject.GetComponent<JumpBoost>() != null)
+        {
+            item = gameObject.AddComponent<JumpBoost>();
+            i = itemObject.GetComponent<JumpBoost>();
+        }
+        else if (itemObject.GetComponent<Teleport>() != null)
+        {
+            item = gameObject.AddComponent<Teleport>();
+            i = itemObject.GetComponent<Teleport>();
+        }
+        else if (itemObject.GetComponent<Magnet>() != null)
+        {
+            item = gameObject.AddComponent<Magnet>();
+            i = itemObject.GetComponent<Magnet>();
+        }
+        else if (itemObject.GetComponent<Bomb>() != null)
+        {
+            item = gameObject.AddComponent<Bomb>();
+            i = itemObject.GetComponent<Bomb>();
+        }
+        else if (itemObject.GetComponent<Chain>() != null)
+        {
+            item = gameObject.AddComponent<Chain>();
+            i = itemObject.GetComponent<Chain>();
+        }
+        else if (itemObject.GetComponent<Barrier>() != null)
+        {
+            item = gameObject.AddComponent<Barrier>();
+            i = itemObject.GetComponent<Barrier>();
+        }
+
+        if (i != null)
+            item.CopyFrom(i);;
+
+        Destroy(itemObject);
+    }
+
+    private void UseItem()
+    {
+        Debug.Log(item.itemName);
+        this.item.OnActivate(this);
+        this.item = null;
+
+        if (gameObject.GetComponent<JumpBoost>() != null)
+            Destroy(gameObject.GetComponent<JumpBoost>());
+        else if (gameObject.GetComponent<Teleport>() != null)
+            Destroy(gameObject.GetComponent<Teleport>());
+        else if (gameObject.GetComponent<Magnet>() != null)
+            Destroy(gameObject.GetComponent<Magnet>());
+        else if (gameObject.GetComponent<Bomb>() != null)
+            Destroy(gameObject.GetComponent<Bomb>());
+        else if (gameObject.GetComponent<Chain>() != null)
+            Destroy(gameObject.GetComponent<Chain>());
+        else if (gameObject.GetComponent<Barrier>() != null)
+            Destroy(gameObject.GetComponent<Barrier>());
     }
 }
