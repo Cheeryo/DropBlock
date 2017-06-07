@@ -8,7 +8,7 @@ public class GoalController : MonoBehaviour {
     private Animator goalAnimator;
     private float goalTimer;
     private bool goalOpen;
-    [SerializeField] private GameManager manager;
+    public GameManager manager;
 
     // Use this for initialization
     void Start () {
@@ -81,6 +81,11 @@ public class GoalController : MonoBehaviour {
         {
             isPlayerInGoal = false;
             Invoke("CloseGoal", 2);
+            if (other.gameObject.GetComponent<PlayerController>().goalReached)
+            {
+                other.gameObject.SetActive(false);
+                manager.playerReachedGoal += 1;
+            }
         }
     }
 }

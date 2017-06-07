@@ -388,21 +388,28 @@ public class PlayerController : MonoBehaviour {
             scoreTimer = 0;
             score += scoreGain;
         }
-        if (currentEnergy > 80)
+        if (manager.playerReachedGoal == 0)
         {
-            scoreGain = 25;
+            if (currentEnergy > 80)
+            {
+                scoreGain = 25;
+            }
+            else if (currentEnergy < 81 && currentEnergy > 50)
+            {
+                scoreGain = 20;
+            }
+            else if (currentEnergy < 51 && currentEnergy > 20)
+            {
+                scoreGain = 10;
+            }
         }
-        else if (currentEnergy < 81 && currentEnergy > 50)
+        else if (manager.playerReachedGoal > 0)
         {
-            scoreGain = 20;
-        }
-        else if (currentEnergy < 51 && currentEnergy > 20)
-        {
-            scoreGain = 10;
-        }
+            scoreGain = 0;
+        }        
         else if (currentEnergy < 21 && currentEnergy > 0)
         {
-            scoreGain = 5;
+            scoreGain = -5;
         }
         else if (currentEnergy == 0)
         {

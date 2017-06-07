@@ -23,22 +23,31 @@ public class GameManager : MonoBehaviour
     public float goalScore;
     public int playerCount;
     public int levelNumber;
+    public int playerReachedGoal;
+    public bool gameHasEnded = false;
     [SerializeField] private GameObject[] goals;
     private StartCountdown countdown;
+    private GameEnding gameEnding;
 
 
 	private void Start ()
     {
         countdown = GetComponent<StartCountdown>();
+        gameEnding = GetComponent<GameEnding>();
         SetPlayers();
         SetLevel();
         StartCoroutine(countdown.GameCountdown());
         
     }
 
+    private void Update()
+    {
+        Debug.Log(playerReachedGoal);
+    }
+
     private void SetPlayers()
     {
-        playerCount = 4;
+        playerCount = 2;
 
         try
         {
@@ -51,6 +60,7 @@ public class GameManager : MonoBehaviour
             players[i].controller.transform.parent.gameObject.SetActive(false);
             players[i].uiContainer.gameObject.SetActive(false);
             players[i].active = false;
+            gameEnding.placementPanels[i].gameObject.SetActive(false);
         }
 
         CameraManager c = GetComponent<CameraManager>();
@@ -111,5 +121,13 @@ public class GameManager : MonoBehaviour
 
         GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
         goals[levelNumber].gameObject.SetActive(true);
+    }
+
+    private void GameEnding()
+    {
+        if (playerReachedGoal == playerCount)
+        {
+            gameHasEnded = true;
+        }
     }
 }
