@@ -22,6 +22,7 @@ namespace Items
         public override void OnActivate(PlayerController caster)
         {
             // höher springen + keine Energiekosten
+            caster.ItemJumpBoost(boostModifier, duration);
         }
     }
 }

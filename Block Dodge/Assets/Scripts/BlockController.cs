@@ -10,6 +10,7 @@ public class BlockController : MonoBehaviour
     private Vector3 fallSpeed;
     private bool locked;
     private bool isCorrupted;
+    private PlayerController caster;
 
     private Rigidbody rb;
     private Renderer blockRend;
@@ -18,7 +19,7 @@ public class BlockController : MonoBehaviour
     public float positionOffset;
     public float energyMinus;
     public float scoreMinus;
-    public enum State { Normal,Charge,Magnet,Pulse,Virus }
+    public enum State { Normal,Charge,Magnet,Pulse,Virus,Barrier }
     public State blockState;
     public bool blockReload = false;
 
@@ -44,6 +45,14 @@ public class BlockController : MonoBehaviour
         set
         {
             isCorrupted = value;
+        }
+    }
+
+    public PlayerController Caster
+    {
+        set
+        {
+            caster = value;
         }
     }
 
@@ -168,11 +177,19 @@ public class BlockController : MonoBehaviour
         }
         if (other.CompareTag("Player") && locked)
         {
+            PlayerController p = other.gameObject.GetComponent<PlayerController>();
             if (blockState == State.Charge && other.gameObject.GetComponent<PlayerController>().currentEnergy < 90 && !blockReload)
             {
-                other.gameObject.GetComponent<PlayerController>().currentEnergy = other.gameObject.GetComponent<PlayerController>().maxEnergy;
+                p.currentEnergy = p.maxEnergy;
                 blockReload = true;
                 Invoke("BlockReactivate", 1.5f);
+            }
+            else if(blockState == State.Barrier)
+            {
+                if(caster != p)
+                {
+                    p.currentEnergy -= 5;
+                }
             }
         }
     }

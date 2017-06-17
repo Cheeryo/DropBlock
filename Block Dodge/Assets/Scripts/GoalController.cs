@@ -36,7 +36,6 @@ public class GoalController : MonoBehaviour {
             manager.goalScore /= 2;
             goalTimer = 0;
         }
-        Debug.Log(manager.goalScore);
 	}
 
     void FixedUpdate()

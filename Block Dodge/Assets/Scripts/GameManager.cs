@@ -39,12 +39,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(countdown.GameCountdown());
         
     }
-
-    private void Update()
-    {
-        Debug.Log(playerReachedGoal);
-    }
-
+    
     private void SetPlayers()
     {
         playerCount = 2;

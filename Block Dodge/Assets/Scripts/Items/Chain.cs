@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Items
@@ -24,6 +25,11 @@ namespace Items
         public override void OnActivate(PlayerController caster)
         {
             //Andere Spieler werden an Stelle festgehalten und können sich nur sehr eingeschränkt bewegen.Mehrmals springen, um Fessel zu lösen
+            PlayerController[] targets = GameObject.FindObjectsOfType<PlayerController>().Where(o => o != caster).ToArray();
+            foreach (PlayerController p in targets)
+            {
+                p.ItemChain(movementModifier, jumpModifier, jumpCount);
+            }
         }
     }
 }

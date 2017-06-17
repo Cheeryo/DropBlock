@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private float secondJumpForce = 3;
     private float jumpTimer;
     private float energyTimer;
+    private bool jumpBoosted = false;
+    private bool energyLocked = false;
     private float scoreTimer;
 
     [HideInInspector] public float currentEnergy;
@@ -59,6 +61,7 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Interface")]
     public Text scoreText;
+    public Image itemImage;
     public Slider energySlider;
     public Image energyBar;
     public Color energyAbove75 = Color.green;
@@ -90,6 +93,16 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Items")]
     [SerializeField] private Item item;
+    private GameObject magnetBlock;
+    private float magnetTime = 0;
+
+    public GameObject SpawnController
+    {
+        get
+        {
+            return spawnController;
+        }
+    }
 
     private void Start ()
     {
@@ -178,6 +191,7 @@ public class PlayerController : MonoBehaviour {
 	
     private void FixedUpdate()
     {
+        EffectCheck();
         Move();
         Jump();
         WallJump();
@@ -382,7 +396,8 @@ public class PlayerController : MonoBehaviour {
         if (energyTimer >= 2.5)
         {
             energyTimer = 0;
-            currentEnergy -= energyDrain;            
+            if(energyLocked)
+                currentEnergy -= energyDrain;            
         }
         if (scoreTimer >= 2.5)
         {
@@ -653,12 +668,16 @@ public class PlayerController : MonoBehaviour {
         if (i != null)
             item.CopyFrom(i);;
 
+        itemImage.color = Color.white;
+        itemImage.sprite = i.icon;
+
         Destroy(itemObject);
     }
 
     private void UseItem()
     {
-        Debug.Log(item.itemName);
+        itemImage.color = new Color(0, 0, 0, 0);
+        itemImage.sprite = null;
         this.item.OnActivate(this);
         this.item = null;
 
@@ -674,5 +693,75 @@ public class PlayerController : MonoBehaviour {
             Destroy(gameObject.GetComponent<Chain>());
         else if (gameObject.GetComponent<Barrier>() != null)
             Destroy(gameObject.GetComponent<Barrier>());
+    }
+
+    private void EffectCheck()
+    {
+        magnetTime += Time.deltaTime;
+        if(magnetBlock != null)
+        {
+            if(Vector3.Distance(transform.position, magnetBlock.transform.position) < 1.5f || magnetTime > 10)
+            {
+                movementPossible = true;
+                rb.useGravity = true;
+                magnetBlock = null;
+            }
+            else
+            {
+                rb.AddForce((magnetBlock.transform.position - transform.position).normalized * 5);
+            }
+        }
+    }
+
+    public void ItemMagnet(GameObject block)
+    {
+        magnetTime = 0;
+        magnetBlock = block;
+        movementPossible = false;
+        rb.useGravity = false;
+    }
+
+    public void ItemJumpBoost(float boost, float duration)
+    {
+        if(!jumpBoosted)
+            StartCoroutine(JumpBoostCoroutine(boost, duration));
+    }
+
+    public void ItemChain(float movementModifier, float jumpModifier, float count)
+    {
+        StartCoroutine(ChainCoroutine(movementModifier, jumpModifier, count));
+    }
+
+    private IEnumerator JumpBoostCoroutine(float boost, float duration)
+    {
+        firstJumpForce *= boost;
+        secondJumpForce *= boost;
+        energyLocked = true;
+        jumpBoosted = true;
+
+        yield return new WaitForSeconds(duration);
+
+        firstJumpForce /= boost;
+        secondJumpForce /= boost;
+        energyLocked = false;
+        jumpBoosted = false;
+    }
+
+    private IEnumerator ChainCoroutine(float movementModifier, float jumpModifier, float count)
+    {
+        firstJumpForce *= jumpModifier;
+        secondJumpForce *= jumpModifier;
+        forwardVel *= movementModifier;
+
+        while(count > 0)
+        {
+            if (Input.GetButtonUp(jumpButton) && isGrounded)
+                count--;
+            yield return null;
+        }
+
+        firstJumpForce /= jumpModifier;
+        secondJumpForce /= jumpModifier;
+        forwardVel /= movementModifier;
     }
 }
