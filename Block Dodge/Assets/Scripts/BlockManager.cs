@@ -20,8 +20,8 @@ public class BlockManager : MonoBehaviour
 
     [SerializeField] private BlockReferences[] blocks;
 
-    private int rightSpawnBoundary;
     private int leftSpawnBoundary;
+    private int rightSpawnBoundary;
     private float spawnPosition;
     private int blockL;
 	
@@ -52,34 +52,42 @@ public class BlockManager : MonoBehaviour
             }
             if (blocks[blockNumber].blockLength == 1)
             {
-                rightSpawnBoundary = (int)-manager.levelWidth;
-                leftSpawnBoundary = (int)manager.levelWidth -1;
+                leftSpawnBoundary = (int)-manager.levelWidth;
+                rightSpawnBoundary = (int)manager.levelWidth -1;
             }
             else if (blocks[blockNumber].blockLength == 2)
             {
-                rightSpawnBoundary = (int)-manager.levelWidth +1;
-                leftSpawnBoundary = (int)manager.levelWidth - 1;
+                leftSpawnBoundary = (int)-manager.levelWidth;
+                rightSpawnBoundary = (int)manager.levelWidth -2;
             }
             else if (blocks[blockNumber].blockLength == 3)
             {
-                rightSpawnBoundary = (int)-manager.levelWidth +1;
-                leftSpawnBoundary = (int)manager.levelWidth -2;
+                leftSpawnBoundary = (int)-manager.levelWidth;
+                rightSpawnBoundary = (int)manager.levelWidth -3;
             }
             else if (blocks[blockNumber].blockLength == 4)
             {
-                rightSpawnBoundary = (int)-manager.levelWidth +2;
-                leftSpawnBoundary = (int)manager.levelWidth - 2;
+                leftSpawnBoundary = (int)-manager.levelWidth;
+                rightSpawnBoundary = (int)manager.levelWidth -4;
             }
             blockL = (int)blocks[blockNumber].blockLength;
-            xPos = CalculatePosition(rightSpawnBoundary, leftSpawnBoundary, blockL);
+            xPos = CalculatePosition(leftSpawnBoundary, rightSpawnBoundary, blockL);
             if (xPos == (manager.levelWidth * -2)) return;
-            if (blocks[blockNumber].blockLength == 1 || blocks[blockNumber].blockLength == 3)
+            if (blocks[blockNumber].blockLength == 1)
             {
                 spawnPosition = xPos + 0.5f;
             }
-            else if (blocks[blockNumber].blockLength == 2 || blocks[blockNumber].blockLength == 4)
+            else if (blocks[blockNumber].blockLength == 2)
             {
-                spawnPosition = xPos;
+                spawnPosition = xPos +1;
+            }
+            else if (blocks[blockNumber].blockLength == 3)
+            {
+                spawnPosition = xPos + 1.5f;
+            }
+            else if (blocks[blockNumber].blockLength == 4)
+            {
+                spawnPosition = xPos + 2;
             }
             GameObject.Instantiate(blocks[blockNumber].blockPrefab, new Vector3(spawnPosition, manager.levelHeight, 0), Quaternion.Euler(0, 0, 0), blockContainer);
      
