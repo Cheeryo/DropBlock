@@ -5,15 +5,15 @@ using UnityEngine;
 public class GoalController : MonoBehaviour {
 
     public bool isPlayerInGoal = false;
-    private Animator goalAnimator;
+    public Animator platformAnimator;
+    public Animator doorAnimatorLeft;
+    public Animator doorAnimatorRight;
     private float goalTimer;
     private bool goalOpen;
     public GameManager manager;
 
     // Use this for initialization
     void Start () {
-
-        goalAnimator = GetComponentInChildren<Animator>();
 
 	}
 	
@@ -45,7 +45,9 @@ public class GoalController : MonoBehaviour {
 
     private void SetAnimator()
     {
-        goalAnimator.SetBool("PlayerInGoal", isPlayerInGoal);
+        platformAnimator.SetBool("PlayerInGoal", isPlayerInGoal);
+        doorAnimatorLeft.SetBool("GoalOpenL", goalOpen);
+        doorAnimatorRight.SetBool("GoalOpenR", goalOpen);
     }
 
     private void CloseGoal()

@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
     [Header("Level")]
     //[SerializeField] private BlockManager blockM;
     [SerializeField] private Transform levelContainer;
-    [SerializeField] private Transform goalContainer;
     [SerializeField] private GameObject[] levels;
     [HideInInspector] public float levelWidth;
     [HideInInspector] public float levelHeight;
@@ -95,7 +94,7 @@ public class GameManager : MonoBehaviour
 
         if (levelNumber == 0) // 20x30
         {
-            levelWidth = 10;
+            levelWidth = 12;
             levelHeight = 35;
         }
         else if (levelNumber == 1) // 20x15
@@ -106,7 +105,7 @@ public class GameManager : MonoBehaviour
         else if (levelNumber == 2) // 40x30
         {
             levelWidth = 20;
-            levelHeight = 35;
+            levelHeight = 45;
         }
         else if (levelNumber == 3) // 40x15
         {
@@ -114,8 +113,7 @@ public class GameManager : MonoBehaviour
             levelHeight = 20;
         }
 
-        GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
-        goals[levelNumber].gameObject.SetActive(true);
+       // GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
     }
 
     private void GameEnding()

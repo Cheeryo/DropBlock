@@ -117,16 +117,23 @@ public class BlockController : MonoBehaviour
             {
                 blockState = State.Charge;
             }
-        }        
+        }   
+        else
+        {
+            blockState = State.Normal;
+        }     
     }
 
     private void BlockStates()
     {
         switch (blockState)
         {
+            case State.Normal:
+                blockRend.sharedMaterial = materials[0];
+                break;
             case State.Charge:
                 blockRend.sharedMaterial = materials[1];
-                break;
+                break;            
         }
     }
 
@@ -151,7 +158,7 @@ public class BlockController : MonoBehaviour
     public void DespawnBlock ()
     {
         isCorrupted = true;
-        blockRend.sharedMaterial = materials[0];
+        blockRend.sharedMaterial = materials[2];
         gameObject.tag = "Corrupted Object";
         gameObject.layer = 9;
         LockBlock();

@@ -386,11 +386,11 @@ public class PlayerController : MonoBehaviour {
         }
         else if ((forwardInput > 0 || forwardInput < 0) && !isHanging)
         {
-            energyDrain = 2;
+            energyDrain = 3;
         }
         else if (isHanging)
         {
-            energyDrain = 3;
+            energyDrain = 4;
         }
 
         if (energyTimer >= 2.5)
@@ -418,19 +418,20 @@ public class PlayerController : MonoBehaviour {
             {
                 scoreGain = 10;
             }
+            else if (currentEnergy < 21 && currentEnergy > 0)
+            {
+                scoreGain = -5;
+            }
+            else if (currentEnergy == 0)
+            {
+                scoreGain = -15;
+            }
         }
         else if (manager.playerReachedGoal > 0)
         {
             scoreGain = 0;
         }        
-        else if (currentEnergy < 21 && currentEnergy > 0)
-        {
-            scoreGain = -5;
-        }
-        else if (currentEnergy == 0)
-        {
-            scoreGain = -15;
-        }
+        
     }
 
     private void GameWon()
@@ -681,18 +682,18 @@ public class PlayerController : MonoBehaviour {
         this.item.OnActivate(this);
         this.item = null;
 
-        if (gameObject.GetComponent<JumpBoost>() != null)
-            Destroy(gameObject.GetComponent<JumpBoost>());
-        else if (gameObject.GetComponent<Teleport>() != null)
-            Destroy(gameObject.GetComponent<Teleport>());
-        else if (gameObject.GetComponent<Magnet>() != null)
+        if (gameObject.GetComponent<Magnet>() != null)
             Destroy(gameObject.GetComponent<Magnet>());
         else if (gameObject.GetComponent<Bomb>() != null)
             Destroy(gameObject.GetComponent<Bomb>());
+        else if (gameObject.GetComponent<Barrier>() != null)
+            Destroy(gameObject.GetComponent<Barrier>());  
+        else if (gameObject.GetComponent<JumpBoost>() != null)
+            Destroy(gameObject.GetComponent<JumpBoost>());
+        else if (gameObject.GetComponent<Teleport>() != null)
+            Destroy(gameObject.GetComponent<Teleport>());
         else if (gameObject.GetComponent<Chain>() != null)
             Destroy(gameObject.GetComponent<Chain>());
-        else if (gameObject.GetComponent<Barrier>() != null)
-            Destroy(gameObject.GetComponent<Barrier>());
     }
 
     private void EffectCheck()
