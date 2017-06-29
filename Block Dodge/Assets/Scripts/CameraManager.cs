@@ -7,16 +7,12 @@ public class CameraManager : MonoBehaviour
 {
     public List<PlayerController> players = new List<PlayerController>();
 
-    [SerializeField] private float lerpSpeed;
-    [SerializeField] private float zoomMultiplier;
-    [SerializeField] private float offsetY;
-
-    private Vector3 startPosition;
+    [SerializeField] private Vector3 offset;
+    
     private GameManager manager;
 
 	private void Start ()
     {
-        startPosition = Camera.main.transform.position;
         manager = GetComponent<GameManager>();
 	}
 	
@@ -26,7 +22,7 @@ public class CameraManager : MonoBehaviour
 
         Bounds b = CalculateBounds();
         float distance = Mathf.Max(20, b.size.y, b.size.z) / (2.0f * Mathf.Tan(0.5f * Camera.main.fieldOfView * Mathf.Deg2Rad));
-        Camera.main.transform.position = startPosition + new Vector3(startPosition.x, b.center.y + offsetY, -distance * zoomMultiplier);
+        Camera.main.transform.position = offset + new Vector3(0, b.center.y, 0) - Camera.main.transform.forward * distance * (0.85f +b.size.y * .01f);
     }
 
     private Bounds CalculateBounds()
@@ -34,7 +30,7 @@ public class CameraManager : MonoBehaviour
         float minX, minY, maxX, maxY;
 
         List<Vector3> positions = new List<Vector3>();
-        foreach(PlayerController p in players)
+        foreach(PlayerController p in players.Where(o => !o.goalReached))
         {
             positions.Add(p.transform.position);
         }
