@@ -9,11 +9,15 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private float lerpSpeed;
     [SerializeField] private float zoomMultiplier;
+    [SerializeField] private float offsetY;
+
     private Vector3 startPosition;
+    private GameManager manager;
 
 	private void Start ()
     {
         startPosition = Camera.main.transform.position;
+        manager = GetComponent<GameManager>();
 	}
 	
 	private void LateUpdate ()
@@ -21,7 +25,8 @@ public class CameraManager : MonoBehaviour
         if (players.Count == 0) return;
 
         Bounds b = CalculateBounds();
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, new Vector3(b.center.x, b.center.y, startPosition.z - Mathf.Max(Mathf.Abs(b.size.y), Mathf.Abs(b.size.x) * .5f) * zoomMultiplier), Time.deltaTime * lerpSpeed);
+        float distance = Mathf.Max(20, b.size.y, b.size.z) / (2.0f * Mathf.Tan(0.5f * Camera.main.fieldOfView * Mathf.Deg2Rad));
+        Camera.main.transform.position = startPosition + new Vector3(startPosition.x, b.center.y + offsetY, -distance * zoomMultiplier);
     }
 
     private Bounds CalculateBounds()

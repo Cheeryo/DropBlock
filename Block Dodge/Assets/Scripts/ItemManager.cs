@@ -35,7 +35,10 @@ public class ItemManager : MonoBehaviour
         Vector3 pos = new Vector3(Random.Range((int)-manager.levelWidth, (int)manager.levelWidth) + .5f, manager.levelHeight, 0);
         RaycastHit[] hit = Physics.RaycastAll(pos + Vector3.down, Vector3.down, manager.levelHeight + 10);
         Debug.DrawRay(pos + Vector3.down, Vector3.down * (manager.levelHeight + 10), Color.red);
-        result = hit.Where(o => (o.collider.CompareTag("Block") && o.collider.GetComponent<BlockController>().Locked) || (o.collider.CompareTag("Level"))).OrderByDescending(o => o.point.y).ToArray()[0].point;
+        hit = hit.Where(o => (o.collider.CompareTag("Block") && o.collider.GetComponent<BlockController>().Locked) || (o.collider.CompareTag("Level"))).OrderByDescending(o => o.point.y).ToArray();
+
+        if (hit.Length > 0)
+            result = hit[0].point;
         return result;
     }
 }
