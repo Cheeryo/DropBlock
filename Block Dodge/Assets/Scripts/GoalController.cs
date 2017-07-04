@@ -62,7 +62,7 @@ public class GoalController : MonoBehaviour {
             isPlayerInGoal = true;
             if (goalOpen)
             {
-                other.gameObject.GetComponent<PlayerController>().goalReached = true;
+                other.gameObject.GetComponent<PlayerController>().GoalReached = true;
             }
         }
     }
@@ -72,7 +72,7 @@ public class GoalController : MonoBehaviour {
         if (other.CompareTag("Player") && goalOpen)
         {
             other.gameObject.GetComponent<PlayerController>().score += manager.goalScore;
-            other.gameObject.GetComponent<PlayerController>().goalReached = true;
+            other.gameObject.GetComponent<PlayerController>().GoalReached = true;
         }
     }
 
@@ -82,7 +82,7 @@ public class GoalController : MonoBehaviour {
         {
             isPlayerInGoal = false;
             Invoke("CloseGoal", 2);
-            if (other.gameObject.GetComponent<PlayerController>().goalReached)
+            if (other.gameObject.GetComponent<PlayerController>().GoalReached)
             {
                 other.gameObject.SetActive(false);
                 manager.playerReachedGoal += 1;

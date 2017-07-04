@@ -30,7 +30,7 @@ public class CameraManager : MonoBehaviour
         float minX, minY, maxX, maxY;
 
         List<Vector3> positions = new List<Vector3>();
-        foreach(PlayerController p in players.Where(o => !o.goalReached))
+        foreach(PlayerController p in players.Where(o => !o.GoalReached))
         {
             positions.Add(p.transform.position);
         }

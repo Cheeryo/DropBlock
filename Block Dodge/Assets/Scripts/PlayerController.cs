@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
     private float wallJumpDirection;
     [SerializeField] private bool isRespawning;
     [SerializeField] private bool chargeRespawn;
-    public bool goalReached;
+    private bool goalReached;
     private bool spawnPossible = true;
     private bool directionFacing;
     private Vector3 facingVector;
@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private float chargeMax;
     private float chargeTimer;
     public float score = 0;
+    private Transform statusPanel;
 
     private Rigidbody rb;
     private Animator playerAnimator;
@@ -104,6 +105,21 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public bool GoalReached
+    {
+        get
+        {
+            return goalReached;
+        }
+
+        set
+        {
+            goalReached = value;
+            if(value)
+                rb.constraints &= ~RigidbodyConstraints.FreezePositionZ;
+        }
+    }
+
     private void Start ()
     {
         rb = GetComponent<Rigidbody>();
@@ -120,6 +136,7 @@ public class PlayerController : MonoBehaviour {
         itemButton = "UseItem_P" + playerNumber;
         spawnerRightButton = "SpawnerRight_P" + playerNumber;
         spawnerLeftButton = "SpawnerLeft_P" + playerNumber;
+        statusPanel = transform.Find("Canvas/StatusPanel");
     }
 
     private void GetInput()
@@ -173,7 +190,7 @@ public class PlayerController : MonoBehaviour {
     private void Update()
     {
         GetInput();
-        if (!goalReached)
+        if (!GoalReached)
         {
             PlayerDirection();
             GroundCheck();
@@ -221,7 +238,7 @@ public class PlayerController : MonoBehaviour {
         {
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
         }
-        if (goalReached)
+        if (GoalReached)
         {
             rb.velocity = new Vector3(0, rb.velocity.y, forwardInput * forwardVel);
         }
@@ -436,7 +453,7 @@ public class PlayerController : MonoBehaviour {
 
     private void GameWon()
     {
-        if (goalReached)
+        if (GoalReached)
         {
             gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
             forwardInput = 0.2f;
@@ -706,6 +723,7 @@ public class PlayerController : MonoBehaviour {
                 movementPossible = true;
                 rb.useGravity = true;
                 magnetBlock = null;
+                statusPanel.GetChild(1).GetComponent<Image>().enabled = false;
             }
             else
             {
@@ -720,6 +738,7 @@ public class PlayerController : MonoBehaviour {
         magnetBlock = block;
         movementPossible = false;
         rb.useGravity = false;
+        statusPanel.GetChild(1).GetComponent<Image>().enabled = true;
     }
 
     public void ItemJumpBoost(float boost, float duration)
@@ -739,6 +758,7 @@ public class PlayerController : MonoBehaviour {
         secondJumpForce *= boost;
         energyLocked = true;
         jumpBoosted = true;
+        statusPanel.GetChild(0).GetComponent<Image>().enabled = true;
 
         yield return new WaitForSeconds(duration);
 
@@ -746,6 +766,7 @@ public class PlayerController : MonoBehaviour {
         secondJumpForce /= boost;
         energyLocked = false;
         jumpBoosted = false;
+        statusPanel.GetChild(0).GetComponent<Image>().enabled = false;
     }
 
     private IEnumerator ChainCoroutine(float movementModifier, float jumpModifier, float count)
@@ -753,8 +774,9 @@ public class PlayerController : MonoBehaviour {
         firstJumpForce *= jumpModifier;
         secondJumpForce *= jumpModifier;
         forwardVel *= movementModifier;
+        statusPanel.GetChild(2).GetComponent<Image>().enabled = true;
 
-        while(count > 0)
+        while (count > 0)
         {
             if (Input.GetButtonUp(jumpButton) && isGrounded)
                 count--;
@@ -764,5 +786,6 @@ public class PlayerController : MonoBehaviour {
         firstJumpForce /= jumpModifier;
         secondJumpForce /= jumpModifier;
         forwardVel /= movementModifier;
+        statusPanel.GetChild(2).GetComponent<Image>().enabled = false;
     }
 }
