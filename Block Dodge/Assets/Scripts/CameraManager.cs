@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Programmiert von Maximilian Schöberl
 public class CameraManager : MonoBehaviour
 {
     public List<PlayerController> players = new List<PlayerController>();

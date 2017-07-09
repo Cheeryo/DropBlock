@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
         public bool active;
     }
 
-    [SerializeField] private PlayerReferences[] players;
+    [SerializeField] public PlayerReferences[] players;
     [Header("Level")]
     //[SerializeField] private BlockManager blockM;
     [SerializeField] private Transform levelContainer;
@@ -26,19 +26,26 @@ public class GameManager : MonoBehaviour
     public bool gameHasEnded = false;
     [SerializeField] private GameObject[] goals;
     private StartCountdown countdown;
-    private GameEnding gameEnding;
+    public float firstScore;
+    public float secondScore;
 
 
 	private void Start ()
     {
         countdown = GetComponent<StartCountdown>();
-        gameEnding = GetComponent<GameEnding>();
         SetPlayers();
         SetLevel();
         StartCoroutine(countdown.GameCountdown());
         
     }
-    
+
+    private void Update()
+    {
+        GameEnding();
+        Debug.Log(levelWidth);
+        Debug.Log(levelHeight);
+    }
+    // Programmiert von Maximilian Schöberl - Anfang
     private void SetPlayers()
     {
         playerCount = 2;
@@ -54,7 +61,6 @@ public class GameManager : MonoBehaviour
             players[i].controller.transform.parent.gameObject.SetActive(false);
             players[i].uiContainer.gameObject.SetActive(false);
             players[i].active = false;
-            gameEnding.placementPanels[i].gameObject.SetActive(false);
         }
 
         CameraManager c = GetComponent<CameraManager>();
@@ -63,7 +69,7 @@ public class GameManager : MonoBehaviour
             if (p.active)
                 c.players.Add(p.controller);
         }
-
+        // Programmiert von Maximilian Schöberl - Ende
         switch (playerCount)
         {
             case 1:
@@ -85,7 +91,9 @@ public class GameManager : MonoBehaviour
     private void SetLevel()
     {
         levelNumber = 0;
-
+        levelWidth = 12;
+        levelHeight = 35;
+        // Programmiert von Maximilian Schöberl - Anfang
         try
         {
             levelNumber = ExchangeManager.instance.SelectedLevelNumber;
@@ -97,23 +105,8 @@ public class GameManager : MonoBehaviour
             levelWidth = 12;
             levelHeight = 35;
         }
-        else if (levelNumber == 1) // 20x15
-        {
-            levelWidth = 10;
-            levelHeight = 20;
-        }
-        else if (levelNumber == 2) // 40x30
-        {
-            levelWidth = 20;
-            levelHeight = 45;
-        }
-        else if (levelNumber == 3) // 40x15
-        {
-            levelWidth = 20;
-            levelHeight = 20;
-        }
-
-       // GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
+        // Programmiert von Maximilian Schöberl - Ende
+        // GameObject.Instantiate(levels[levelNumber], new Vector3(0, 2, 0), Quaternion.Euler(0, 180, 0), levelContainer);
     }
 
     private void GameEnding()

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Programmiert von Maximilian Schöberl
 public class ExchangeManager : MonoBehaviour
 {
     public static ExchangeManager instance;
 
-    [SerializeField] private int selectedPlayerCount = 1;
+    [SerializeField] private int selectedPlayerCount = 2;
     [SerializeField] private int selectedLevelNumber = 1;
 
     public int SelectedPlayerCount

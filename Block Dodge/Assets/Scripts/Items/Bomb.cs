@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Programmiert von Maximilian Schöberl
 namespace Items
 {
     public class Bomb : Item
@@ -24,7 +25,7 @@ namespace Items
         public override void OnActivate(PlayerController caster)
         {
             //Man lässt eine Bombe beim Spawner fallen, die bei Kollision nach x Sekunden explodiert, Blöcke zerstört und anderen Spielern schadet
-            BombController bomb = GameObject.Instantiate(bombPrefab, caster.SpawnController.transform.position + Vector3.up * 29, Quaternion.identity, GameObject.Find("Gameplay/Items").transform).GetComponent<BombController>();
+            BombController bomb = GameObject.Instantiate(bombPrefab, new Vector3(caster.SpawnController.transform.position.x, caster.SpawnController.transform.position.y, 0), Quaternion.identity, GameObject.Find("Gameplay/Items").transform).GetComponent<BombController>();
             bomb.Init(delay, radius);
         }
     }

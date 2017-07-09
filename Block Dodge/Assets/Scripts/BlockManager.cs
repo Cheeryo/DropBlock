@@ -115,7 +115,7 @@ public class BlockManager : MonoBehaviour
         }
         return blockPool;
     }
-
+    // Programmiert von Maximilian Schöberl
     /// <summary>
     /// Returns a new X Position where the column is not blocked by another block.
     /// </summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Programmiert von Maximilian Schöberl
 public class BombController : MonoBehaviour {
 
     [SerializeField] private GameObject explosionPrefab;

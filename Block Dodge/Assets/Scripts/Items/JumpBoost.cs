@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Programmiert von Maximilian Schöberl
 namespace Items
 {
     public class JumpBoost : Item

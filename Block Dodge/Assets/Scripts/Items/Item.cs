@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Programmiert von Maximilian Schöberl
 namespace Items
 {
     public abstract class Item : MonoBehaviour

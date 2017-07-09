@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Programmiert von Maximilian Schöberl
 namespace Items
 {
     public class Chain : Item

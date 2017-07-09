@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour {
     private float chargeTimer;
     public float score = 0;
     private Transform statusPanel;
+    public GameObject playerPanel;
 
     private Rigidbody rb;
     private Animator playerAnimator;
@@ -92,6 +93,7 @@ public class PlayerController : MonoBehaviour {
 
     public GameObject headPosition;
 
+    // Programmiert von Maximilian Schöberl - Anfang
     [Header("Items")]
     [SerializeField] private Item item;
     private GameObject magnetBlock;
@@ -119,7 +121,7 @@ public class PlayerController : MonoBehaviour {
                 rb.constraints &= ~RigidbodyConstraints.FreezePositionZ;
         }
     }
-
+    // Programmiert von Maximilian Schöberl - Ende
     private void Start ()
     {
         rb = GetComponent<Rigidbody>();
@@ -137,6 +139,7 @@ public class PlayerController : MonoBehaviour {
         spawnerRightButton = "SpawnerRight_P" + playerNumber;
         spawnerLeftButton = "SpawnerLeft_P" + playerNumber;
         statusPanel = transform.Find("Canvas/StatusPanel");
+        Invoke("DeactivatePlayerPanel", 5);
     }
 
     private void GetInput()
@@ -215,6 +218,7 @@ public class PlayerController : MonoBehaviour {
         SetAnimator();
     }
 
+    // Programmiert von Maximilian Schöberl - Anfang
     private void Move ()
     {
         if (!movementPossible) return;
@@ -243,6 +247,7 @@ public class PlayerController : MonoBehaviour {
             rb.velocity = new Vector3(0, rb.velocity.y, forwardInput * forwardVel);
         }
     }
+    // Programmiert von Maximilian Schöberl - Ende
 
     private void PlayerDirection()
     {
@@ -322,13 +327,13 @@ public class PlayerController : MonoBehaviour {
             StartCoroutine(AfterWallJump(.15f));
         }
     }
-    
+    // Programmiert von Maximilian Schöberl - Anfang
     private IEnumerator AfterWallJump(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
         movementPossible = true;
     }
-
+    // Programmiert von Maximilian Schöberl - Ende
     private void SetAnimator()
     {
         playerAnimator.SetFloat("MoveSpeed",forwardInput);
@@ -529,14 +534,15 @@ public class PlayerController : MonoBehaviour {
             }
         }
     }
-    
+
+    // Programmiert von Maximilian Schöberl - Anfang
     private void GroundCheck()
     {
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, Vector3.down, out hit, .7f))
         {
-            if (hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block"))
+            if (hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block") || hit.collider.CompareTag("SpawnedItem"))
             {
                 //isRespawning = false;
                 isGrounded = true;
@@ -555,6 +561,7 @@ public class PlayerController : MonoBehaviour {
             isGrounded = false;
         }
     }
+    // Programmiert von Maximilian Schöberl - Ende
 
     private void WallCheck()
     {
@@ -619,6 +626,11 @@ public class PlayerController : MonoBehaviour {
         isRespawning = false;
     }
 
+    private void DeactivatePlayerPanel()
+    {
+        playerPanel.SetActive(false);
+    }
+
     private void OnCollisionEnter(Collision col)
     {
         /*
@@ -649,6 +661,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    // Programmiert von Maximilian Schöberl
     private void PickUpItem(GameObject itemObject)
     {
         Item i = null;

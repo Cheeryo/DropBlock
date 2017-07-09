@@ -23,6 +23,7 @@ public class BlockController : MonoBehaviour
     public State blockState;
     public bool blockReload = false;
 
+    // Programmiert von Maximilian Schöberl - Anfang
     public bool Locked
     {
         get
@@ -55,6 +56,7 @@ public class BlockController : MonoBehaviour
             caster = value;
         }
     }
+    // Programmiert von Maximilian Schöberl - Ende
 
     private void Start ()
     {
@@ -142,6 +144,7 @@ public class BlockController : MonoBehaviour
         blockReload = false;
     }
 
+    // Programmiert von Maximilian Schöberl - Anfang
     public void LockBlock()
     {
         Locked = true;
@@ -154,7 +157,7 @@ public class BlockController : MonoBehaviour
         Locked = false;
         rb.isKinematic = false;
     }
-
+    // Programmiert von Maximilian Schöberl - Ende
     public void DespawnBlock ()
     {
         isCorrupted = true;
@@ -175,7 +178,7 @@ public class BlockController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Block") || other.CompareTag("Level"))
+        if (other.CompareTag("Block") || other.CompareTag("Level") || other.CompareTag("SpawnedItem"))
         {
             if (!locked)
             {
@@ -203,7 +206,7 @@ public class BlockController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Block"))
+        if (other.CompareTag("Block") || other.CompareTag("SpawnedItem"))
         {
             if (locked)
             {
