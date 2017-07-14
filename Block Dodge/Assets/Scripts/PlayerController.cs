@@ -451,7 +451,7 @@ public class PlayerController : MonoBehaviour {
         }
         else if (manager.playerReachedGoal > 0)
         {
-            scoreGain = 0;
+            scoreGain = -5;
         }        
         
     }

@@ -10,6 +10,7 @@ public class GoalController : MonoBehaviour {
     public Animator doorAnimatorRight;
     private float goalTimer;
     private bool goalOpen;
+    private bool halvePoints = false;
     public GameManager manager;
 
     // Use this for initialization
@@ -29,11 +30,16 @@ public class GoalController : MonoBehaviour {
         else if (!isPlayerInGoal)
         {
             goalTimer = 0;
+            halvePoints = false;
         }
         if (goalTimer >= 1.5f)
         {
             goalOpen = true;
-            manager.goalScore /= 2;
+            if (!halvePoints)
+            {
+                manager.goalScore /= 2;
+                halvePoints = true;
+            }            
             goalTimer = 0;
         }
 	}
@@ -69,7 +75,7 @@ public class GoalController : MonoBehaviour {
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player") && goalOpen)
+        if (other.CompareTag("Player") && !other.gameObject.GetComponent<PlayerController>().GoalReached && goalOpen)
         {
             other.gameObject.GetComponent<PlayerController>().score += manager.goalScore;
             other.gameObject.GetComponent<PlayerController>().GoalReached = true;

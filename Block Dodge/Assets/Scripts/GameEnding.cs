@@ -22,6 +22,7 @@ public class GameEnding : MonoBehaviour {
 	void Update () {
 		if (manager.gameHasEnded)
         {
+            Debug.Log(manager.firstScore);
             Placement();
             playerPanels.gameObject.SetActive(false);
             gameEndPanel.gameObject.SetActive(true);
