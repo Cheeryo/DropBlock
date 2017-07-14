@@ -542,7 +542,7 @@ public class PlayerController : MonoBehaviour {
 
         if (Physics.Raycast(transform.position, Vector3.down, out hit, .7f))
         {
-            if (hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block") || hit.collider.CompareTag("SpawnedItem"))
+            if (hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block") || hit.collider.CompareTag("SpawnedItem") || hit.collider.CompareTag("Platform"))
             {
                 //isRespawning = false;
                 isGrounded = true;
