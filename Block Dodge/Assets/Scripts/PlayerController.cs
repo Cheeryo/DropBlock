@@ -460,7 +460,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (GoalReached)
         {
-            gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+            gameObject.transform.rotation = Quaternion.Euler(0, -90, 0);
             forwardInput = 0.2f;
         }
     }
@@ -649,7 +649,7 @@ public class PlayerController : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Block")  && !other.GetComponent<BlockController>().Locked)
+        if ((other.CompareTag("Block") || other.CompareTag("SpawnedItem"))  && !other.GetComponent<BlockController>().Locked)
         {
             currentEnergy -= other.gameObject.GetComponent<BlockController>().energyMinus;
             score -= other.gameObject.GetComponent<BlockController>().scoreMinus;
