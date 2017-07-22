@@ -21,7 +21,7 @@ namespace Items
         public override void OnActivate(PlayerController caster)
         {
             //4-Blöcke hohes Hindernis, das anderen Spielern schadet und nicht zum Abspringen benutzt werden kann
-            BlockController block = GameObject.Instantiate(barrierPrefab, new Vector3(caster.SpawnController.transform.position.x, caster.SpawnController.transform.position.y + 16, 0), Quaternion.identity, GameObject.Find("Gameplay/Cubes").transform).GetComponent<BlockController>();
+            BlockController block = GameObject.Instantiate(barrierPrefab, new Vector3(caster.SpawnController.transform.position.x, 34, 0), Quaternion.identity, GameObject.Find("Gameplay/Cubes").transform).GetComponent<BlockController>();
             block.Caster = caster;
         }
     }

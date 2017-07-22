@@ -24,10 +24,9 @@ namespace Items
             PlayerController[] targets = GameObject.FindObjectsOfType<PlayerController>().Where(o => o != caster).ToArray();
             RaycastHit hit;
             Vector3 pos = caster.SpawnController.transform.position;
-            if (Physics.Raycast(caster.SpawnController.transform.position + Vector3.up, Vector3.down, out hit, 30))
+            if (Physics.Raycast(new Vector3(caster.SpawnController.transform.position.x,34,0), Vector3.down, out hit, 35))
             {
                 pos = hit.point;
-                pos.z = 0;
             }
             GameObject block = GameObject.Instantiate(blockPrefab, new Vector3(pos.x, pos.y, 0), Quaternion.identity, GameObject.Find("Gameplay/Cubes").transform);
             foreach (PlayerController p in targets)
