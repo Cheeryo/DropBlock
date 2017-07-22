@@ -17,15 +17,12 @@ public class StartCountdown : MonoBehaviour {
     public IEnumerator GameCountdown()
     {
         countdownPanel.gameObject.SetActive(true);
-        Time.timeScale = 0.1f;
         countdownText.text = "3";
-        yield return new WaitForSeconds(0.1f);
-        Time.timeScale = 0.25f;
+        yield return new WaitForSeconds(1);
         countdownText.text = "2";
-        yield return new WaitForSeconds(0.25f);
-        Time.timeScale = 0.5f;
+        yield return new WaitForSeconds(1);
         countdownText.text = "1";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1);
         Time.timeScale = 1;
         if (firstStart)
         {

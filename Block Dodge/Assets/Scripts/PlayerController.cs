@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour {
 
     [Header("States")]
     [SerializeField] private bool isGrounded;
+    [SerializeField] private bool inGoal;
     [SerializeField] private bool isMidAir;
     [SerializeField] private bool isJumping;
     [SerializeField] private bool isFirstJumping;
@@ -193,17 +194,17 @@ public class PlayerController : MonoBehaviour {
     private void Update()
     {
         GetInput();
+        PlayerDirection();
+        GroundCheck();
+        SetUI();
+        EnergyScoreManagement();
         if (!GoalReached)
-        {
-            PlayerDirection();
-            GroundCheck();
+        {            
             WallCheck();
             spawnMovementControl();
             CheckSpawner();
-            SetUI();
             CheckRespawn();
-            ForceRespawn();
-            EnergyScoreManagement();
+            ForceRespawn();            
         }
         
         GameWon();
@@ -229,7 +230,7 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            if(isGrounded || jumpControl)
+            if(isGrounded || jumpControl || inGoal)
                 rb.velocity = new Vector3(0, rb.velocity.y, 0);            
             else
                 rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
@@ -418,7 +419,7 @@ public class PlayerController : MonoBehaviour {
         if (energyTimer >= 2.5)
         {
             energyTimer = 0;
-            if(energyLocked)
+            if(!energyLocked)
                 currentEnergy -= energyDrain;            
         }
         if (scoreTimer >= 2.5)
@@ -524,7 +525,7 @@ public class PlayerController : MonoBehaviour {
         Vector3 raycastPosition = new Vector3(spawnControllerPosition, manager.levelHeight, 0);
         if (Physics.Raycast(raycastPosition, Vector3.down, out spawnHit, manager.levelHeight))
         {
-            if (spawnHit.collider.CompareTag("Block") && !spawnHit.collider.GetComponent<BlockController>().Locked)
+            if (spawnHit.collider.CompareTag("Block") && !spawnHit.collider.GetComponent<BlockController>().Locked || spawnHit.collider.CompareTag("SpawnedItem"))
             {
                 spawnPossible = false;
             }
@@ -539,10 +540,11 @@ public class PlayerController : MonoBehaviour {
     private void GroundCheck()
     {
         RaycastHit hit;
+        Debug.DrawRay(transform.position, Vector3.down, Color.green);
 
         if (Physics.Raycast(transform.position, Vector3.down, out hit, .7f))
         {
-            if (hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block") || hit.collider.CompareTag("SpawnedItem") || hit.collider.CompareTag("Platform"))
+            if (hit.collider.CompareTag("Platform") || hit.collider.CompareTag("Level") || hit.collider.CompareTag("Block") || hit.collider.CompareTag("SpawnedItem"))
             {
                 //isRespawning = false;
                 isGrounded = true;
@@ -658,6 +660,19 @@ public class PlayerController : MonoBehaviour {
         else if(other.CompareTag("Item") && item == null)
         {
             PickUpItem(other.gameObject);
+        }
+
+        if (other.CompareTag("Platform"))
+        {
+            inGoal = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Platform"))
+        {
+            inGoal = false;
         }
     }
 

@@ -42,8 +42,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         GameEnding();
-        Debug.Log(levelWidth);
-        Debug.Log(levelHeight);
     }
     // Programmiert von Maximilian Schöberl - Anfang
     private void SetPlayers()
@@ -73,7 +71,7 @@ public class GameManager : MonoBehaviour
         switch (playerCount)
         {
             case 1:
-                goalScore = 200;
+                goalScore = 400;
                 break;                
             case 2:
                 goalScore = 400;
